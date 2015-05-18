@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include "JuceHeader.h"
+#include "AudioAnalyzer.h"
 
 #define LIVE_INPUT 0
 #define FILE_INPUT 1
@@ -45,6 +46,7 @@ private:
     AudioTransportSource transportSource;
     AudioFormatManager formatManager;
     TimeSliceThread playingThread;
+    AudioAnalyzer audioAnalyzer = AudioAnalyzer(512);
     
     AudioSampleBuffer sampleBuffer = AudioSampleBuffer(1,RECORDSIZE); //the buffer is for store;
     AudioSampleBuffer calculateBuffer = AudioSampleBuffer(1,RECORDSIZE); //the buffer is throwing to the pitchtail

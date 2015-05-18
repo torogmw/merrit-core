@@ -41,7 +41,7 @@ ChromaFeat::~ChromaFeat()
 
 // Calculate 12-dimensional chroma vector
 // I presume the sampling frequency is 16kHz
-int ChromaFeat::Chroma(const uint16_t* buffer) {
+int ChromaFeat::Chroma(const float* buffer) {
 	
 	// check if the input arguments are legal
 	if (length == 0 || buffer == NULL || (buffer+length-1) == NULL) {

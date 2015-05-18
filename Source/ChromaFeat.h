@@ -18,7 +18,7 @@
 
 class ChromaFeat {
 public:
-	int Chroma(const uint16_t* buffer);
+	int Chroma(const float* buffer);
 	//int Chroma2(const uint16_t* buffer);
 	ChromaFeat(uint32_t lengthArg);
 	~ChromaFeat();

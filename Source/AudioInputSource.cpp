@@ -66,6 +66,7 @@ void AudioInputSource::audioDeviceIOCallback(const float **inputChannelData, int
     
     if (choice == FILE_INPUT )
     {
+        audioAnalyzer.Analyze(inputChannelData[0]);
         audioSourcePlayer.audioDeviceIOCallback (inputChannelData, totalNumInputChannels, outputChannelData, totalNumOutputChannels, numSamples);
         //pass the output to the player
         
