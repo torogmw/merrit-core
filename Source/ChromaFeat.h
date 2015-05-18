@@ -3,6 +3,9 @@
 
 #include "rsrfft.h"
 #include <cmath>
+#include <cstdlib>
+#include <cstdio>
+#include <stdint.h>
 
 #define FS				 16000
 #define NUMBEROFCHROMES		12
@@ -15,19 +18,19 @@
 
 class ChromaFeat {
 public:
-	int Chroma(const short* buffer);
-	//int Chroma2(const short* buffer);
-	ChromaFeat(unsigned long lengthArg);
+	int Chroma(const uint16_t* buffer);
+	//int Chroma2(const uint16_t* buffer);
+	ChromaFeat(uint32_t lengthArg);
 	~ChromaFeat();
 	float *chroma;
 	
 protected:
 	SplitRadixFFT *fft;
-	unsigned long length;
+	uint32_t length;
 	float *hammingWin;
 	float *powerOf2ROOT12;
-	unsigned long FFT_Point;
-	short FFT_Order;
+	uint32_t FFT_Point;
+	uint16_t FFT_Order;
 };
 
 #endif
