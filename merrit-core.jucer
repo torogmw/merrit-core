@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="Td9I2g" name="merrit-core" projectType="guiapp" version="1.0.0"
+              bundleIdentifier="com.yourcompany.merritcore" includeBinaryInAppConfig="1"
+              jucerVersion="3.1.0">
+  <MAINGROUP id="NUtEzM" name="merrit-core">
+    <GROUP id="{B06626E2-3868-A9E1-29DD-B6A380C16FC4}" name="Source">
+      <FILE id="PqUm6p" name="AudioInputSource.cpp" compile="1" resource="0"
+            file="Source/AudioInputSource.cpp"/>
+      <FILE id="nLsKBH" name="AudioInputSource.h" compile="0" resource="0"
+            file="Source/AudioInputSource.h"/>
+      <FILE id="ZHVxpP" name="ChromaFeat.cpp" compile="1" resource="0" file="Source/ChromaFeat.cpp"/>
+      <FILE id="hLBcmP" name="ChromaFeat.h" compile="0" resource="0" file="Source/ChromaFeat.h"/>
+      <FILE id="j8jm5v" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="r51jqj" name="PlaybackUI.cpp" compile="1" resource="0" file="Source/PlaybackUI.cpp"/>
+      <FILE id="GhX7GH" name="PlaybackUI.h" compile="0" resource="0" file="Source/PlaybackUI.h"/>
+      <FILE id="N0xX8G" name="rsrfft.cxx" compile="1" resource="0" file="Source/rsrfft.cxx"/>
+      <FILE id="nsDB1n" name="rsrfft.h" compile="0" resource="0" file="Source/rsrfft.h"/>
+      <FILE id="JH5O9A" name="ruofeng_main.cpp" compile="1" resource="0"
+            file="Source/ruofeng_main.cpp"/>
+      <FILE id="JFu259" name="SpectralContrastFeat.cpp" compile="1" resource="0"
+            file="Source/SpectralContrastFeat.cpp"/>
+      <FILE id="yLarjQ" name="SpectralContrastFeat.h" compile="0" resource="0"
+            file="Source/SpectralContrastFeat.h"/>
+      <FILE id="zzGRIv" name="TempoFeat.cpp" compile="1" resource="0" file="Source/TempoFeat.cpp"/>
+      <FILE id="gWr37j" name="TempoFeat.h" compile="0" resource="0" file="Source/TempoFeat.h"/>
+      <FILE id="JlSvGH" name="TemporalFeat.cpp" compile="1" resource="0"
+            file="Source/TemporalFeat.cpp"/>
+      <FILE id="kDJOwE" name="TemporalFeat.h" compile="0" resource="0" file="Source/TemporalFeat.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       isDebug="1" optimisation="1" targetName="merrit-core"/>
+        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       isDebug="0" optimisation="2" targetName="merrit-core"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_events" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_graphics" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_video" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_opengl" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../JUCE-OSX/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+    <XCODE_IPHONE targetFolder="Builds/iOS">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" iosCompatibility="default" isDebug="1" optimisation="1"
+                       targetName="merrit-core"/>
+        <CONFIGURATION name="Release" iosCompatibility="default" isDebug="0" optimisation="2"
+                       targetName="merrit-core"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_events" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_graphics" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_video" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_opengl" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../JUCE-OSX/modules"/>
+      </MODULEPATHS>
+    </XCODE_IPHONE>
+    <ANDROID targetFolder="Builds/Android" androidActivityClass="com.yourcompany.merritcore.merritcore"
+             androidSDKPath="${user.home}/SDKs/android-sdk" androidNDKPath="${user.home}/SDKs/android-ndk"
+             androidMinimumSDK="8" androidInternetNeeded="1" androidKeyStore="${user.home}/.android/debug.keystore"
+             androidKeyStorePass="android" androidKeyAlias="androiddebugkey"
+             androidKeyAliasPass="android" androidCpp11="1">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" androidArchitectures="armeabi armeabi-v7a" isDebug="1"
+                       optimisation="1" targetName="merrit-core"/>
+        <CONFIGURATION name="Release" androidArchitectures="armeabi armeabi-v7a" isDebug="0"
+                       optimisation="2" targetName="merrit-core"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_events" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_graphics" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_video" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_opengl" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../JUCE-OSX/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../JUCE-OSX/modules"/>
+      </MODULEPATHS>
+    </ANDROID>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULES id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_audio_utils" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_core" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_cryptography" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_events" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_video" showAllCode="1" useLocalCopy="0"/>
+  </MODULES>
+  <JUCEOPTIONS/>
+</JUCERPROJECT>
