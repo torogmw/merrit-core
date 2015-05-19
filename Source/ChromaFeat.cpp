@@ -5,7 +5,7 @@ ChromaFeat::ChromaFeat(uint32_t lengthArg, float fs_)
 	uint32_t i;
 	length = lengthArg;
     fs = fs_;
-	chroma = new float[NUMBEROFCHROMES];
+	chroma = new float[NUMBEROFNOTES];
 
 	// We only calculate these slow math once
 	hammingWin = new float[length];
@@ -89,29 +89,43 @@ int ChromaFeat::Chroma(const float* buffer) {
 	// We can safely calculate chroma vector now
 	
 	
-	// the 'i' loop covers each key, where '0' indicates C, '6' indicates 'F#', etc.
-	for (i=0; i<NUMBEROFCHROMES; i++) 
-	{
-		chroma[i] = 0;
-		
-		// the 'j' loop covers each pitch of one key, i.e. C0, C2, ...
-		for (j=0; j<NUMBEROFNOTES; j=j+NUMBEROFCHROMES) 
-		{
-			
-			// so this is how we determine both sides of FFT index
-			uint32_t left = (uint32_t) ceil(indexBoundary[i + j]);
-			uint32_t right = (uint32_t) floor(indexBoundary[i + j + 1]);
-			float FFT_sum = 0;
-
-			// the 'k' loop sums over all FFT values belonging to one key.
-			for (k=left; k<=right; k++) 
-			{
-				FFT_sum += (float) (sqrt(X[k] * X[k] + X[FFT_Point-k] * X[FFT_Point-k]));
-			}
-
-			chroma[i] += FFT_sum;
-		}
-	}
+//	// the 'i' loop covers each key, where '0' indicates C, '6' indicates 'F#', etc.
+//	for (i=0; i<NUMBEROFCHROMES; i++) 
+//	{
+//		chroma[i] = 0;
+//		
+//		// the 'j' loop covers each pitch of one key, i.e. C0, C2, ...
+//		for (j=0; j<NUMBEROFNOTES; j=j+NUMBEROFCHROMES) 
+//		{
+//			
+//			// so this is how we determine both sides of FFT index
+//			uint32_t left = (uint32_t) ceil(indexBoundary[i + j]);
+//			uint32_t right = (uint32_t) floor(indexBoundary[i + j + 1]);
+//			float FFT_sum = 0;
+//
+//			// the 'k' loop sums over all FFT values belonging to one key.
+//			for (k=left; k<=right; k++) 
+//			{
+//				FFT_sum += (float) (sqrt(X[k] * X[k] + X[FFT_Point-k] * X[FFT_Point-k]));
+//			}
+//
+//			chroma[i] += FFT_sum;
+//		}
+//	}
+    
+    for (i=0; i<NUMBEROFNOTES; i++) {
+        uint32_t left = (uint32_t) ceil(indexBoundary[i]);
+        uint32_t right = (uint32_t) floor(indexBoundary[i + 1]);
+        float FFT_sum = 0;
+        
+        // the 'k' loop sums over all FFT values belonging to one key.
+        for (k=left; k<=right; k++)
+        {
+            FFT_sum += (float) (sqrt(X[k] * X[k] + X[FFT_Point-k] * X[FFT_Point-k]));
+        }
+        
+        chroma[i] = FFT_sum;
+    }
 	
 	// clean up
 	delete []X;

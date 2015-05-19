@@ -17,7 +17,7 @@ AudioAnalyzer::AudioAnalyzer(const float *audio_, uint32_t num_samples, float fs
     num_frames = (num_samples - frame_size) / hop_size + 1;
     chromaFeat = new ChromaFeat(frame_size, fs);
     frame_features = new float*[num_frames];
-    frame_feature_dimension = NUMBEROFCHROMES;
+    frame_feature_dimension = NUMBEROFNOTES;
     
     // MIR - frame-level analysis
     for (int i=0; i<num_frames; i++) {
