@@ -5,13 +5,18 @@
               jucerVersion="3.1.0">
   <MAINGROUP id="NUtEzM" name="merrit-core">
     <GROUP id="{B06626E2-3868-A9E1-29DD-B6A380C16FC4}" name="Source">
-      <FILE id="v0rzbP" name="AudioAnalyzer.cpp" compile="1" resource="0"
+      <GROUP id="{F952E889-2F2D-36E1-C44C-AA6BBB767B57}" name="Audio-Basic">
+        <FILE id="PqUm6p" name="AudioInputSource.cpp" compile="1" resource="0"
+              file="Source/AudioInputSource.cpp"/>
+        <FILE id="nLsKBH" name="AudioInputSource.h" compile="0" resource="0"
+              file="Source/AudioInputSource.h"/>
+        <FILE id="aKfOzk" name="AudioRecorder.cpp" compile="1" resource="0"
+              file="Source/AudioRecorder.cpp"/>
+        <FILE id="TvPXBV" name="AudioRecorder.h" compile="0" resource="0" file="Source/AudioRecorder.h"/>
+      </GROUP>
+      <FILE id="hqhruY" name="AudioAnalyzer.cpp" compile="1" resource="0"
             file="Source/AudioAnalyzer.cpp"/>
-      <FILE id="xh6ZzY" name="AudioAnalyzer.h" compile="0" resource="0" file="Source/AudioAnalyzer.h"/>
-      <FILE id="PqUm6p" name="AudioInputSource.cpp" compile="1" resource="0"
-            file="Source/AudioInputSource.cpp"/>
-      <FILE id="nLsKBH" name="AudioInputSource.h" compile="0" resource="0"
-            file="Source/AudioInputSource.h"/>
+      <FILE id="bXxGq5" name="AudioAnalyzer.h" compile="0" resource="0" file="Source/AudioAnalyzer.h"/>
       <FILE id="ZHVxpP" name="ChromaFeat.cpp" compile="1" resource="0" file="Source/ChromaFeat.cpp"/>
       <FILE id="hLBcmP" name="ChromaFeat.h" compile="0" resource="0" file="Source/ChromaFeat.h"/>
       <FILE id="j8jm5v" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>

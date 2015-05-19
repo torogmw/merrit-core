@@ -23,6 +23,7 @@
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
 #include "AudioInputSource.h"
+#include "AudioRecorder.h"
 //[/Headers]
 
 
@@ -45,6 +46,8 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    void startRecording();
+    void stopRecording();
     //[/UserMethods]
 
     void paint (Graphics& g);
@@ -57,6 +60,7 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     AudioDeviceManager deviceManager;
     ScopedPointer<AudioInputSource> inputSource;
+    ScopedPointer<AudioRecorder> recorder;
     //[/UserVariables]
 
     //==============================================================================
@@ -64,6 +68,7 @@ private:
     ScopedPointer<TextButton> loadButton;
     ScopedPointer<Label> resultLabel;
     ScopedPointer<Label> title;
+    ScopedPointer<TextButton> recordButton;
 
 
     //==============================================================================
