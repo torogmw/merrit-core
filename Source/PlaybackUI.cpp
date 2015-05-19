@@ -32,7 +32,7 @@ PlaybackUI::PlaybackUI ()
     addAndMakeVisible (playStopButton = new TextButton ("play / stop"));
     playStopButton->addListener (this);
 
-    addAndMakeVisible (loadButton = new TextButton ("record button"));
+    addAndMakeVisible (loadButton = new TextButton ("load button"));
     loadButton->setButtonText (TRANS("load"));
     loadButton->addListener (this);
 
@@ -51,6 +51,10 @@ PlaybackUI::PlaybackUI ()
     title->setEditable (false, false, false);
     title->setColour (TextEditor::textColourId, Colours::black);
     title->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    addAndMakeVisible (recordButton = new TextButton ("record button"));
+    recordButton->setButtonText (TRANS("record"));
+    recordButton->addListener (this);
 
 
     //[UserPreSize]
@@ -79,6 +83,7 @@ PlaybackUI::~PlaybackUI()
     loadButton = nullptr;
     resultLabel = nullptr;
     title = nullptr;
+    recordButton = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -103,9 +108,10 @@ void PlaybackUI::resized()
     //[/UserPreResize]
 
     playStopButton->setBounds (104, 168, 150, 24);
-    loadButton->setBounds (104, 112, 150, 24);
+    loadButton->setBounds (104, 120, 150, 24);
     resultLabel->setBounds (104, 256, 152, 224);
     title->setBounds (64, 24, 224, 40);
+    recordButton->setBounds (104, 72, 150, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -126,7 +132,7 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
         //[UserButtonCode_loadButton] -- add your button handler code here..
         inputSource= nullptr;
         // init the file input here
-        FileChooser chooser (("Choose audio file to open"),File::nonexistent,"*",true);
+        FileChooser chooser (("Choose audio file to open"),File::getSpecialLocation(File::userMusicDirectory),"*",true);
         chooser.browseForFileToOpen();
         if(chooser.getResult().exists())
         {
@@ -137,6 +143,15 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
         }
         //[/UserButtonCode_loadButton]
     }
+    else if (buttonThatWasClicked == recordButton)
+    {
+        //[UserButtonCode_recordButton] -- add your button handler code here..
+        if (recorder)
+            stopRecording();
+        else
+            startRecording();
+        //[/UserButtonCode_recordButton]
+    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -145,6 +160,24 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+
+void PlaybackUI::startRecording()
+{
+    recorder = new AudioRecorder();
+    deviceManager.addAudioCallback(recorder);
+    const File file (File::getSpecialLocation (File::userMusicDirectory)
+                     .getNonexistentChildFile ("practice", ".wav"));
+    recorder->startRecording (file);
+    recordButton->setButtonText ("Stop");
+}
+
+void PlaybackUI::stopRecording()
+{
+    recorder->stop();
+    recordButton->setButtonText ("Record");
+    deviceManager.removeAudioCallback(recorder);
+    recorder = nullptr;
+}
 
 //[/MiscUserCode]
 
@@ -166,8 +199,8 @@ BEGIN_JUCER_METADATA
   <TEXTBUTTON name="play / stop" id="691427fc69b5adc6" memberName="playStopButton"
               virtualName="" explicitFocusOrder="0" pos="104 168 150 24" buttonText="play / stop"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="record button" id="1d59d8ea76ceba03" memberName="loadButton"
-              virtualName="" explicitFocusOrder="0" pos="104 112 150 24" buttonText="load"
+  <TEXTBUTTON name="load button" id="1d59d8ea76ceba03" memberName="loadButton"
+              virtualName="" explicitFocusOrder="0" pos="104 120 150 24" buttonText="load"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <LABEL name="result label" id="f3671d4a4efe8c7b" memberName="resultLabel"
          virtualName="" explicitFocusOrder="0" pos="104 256 152 224" edTextCol="ff000000"
@@ -179,6 +212,9 @@ BEGIN_JUCER_METADATA
          edBkgCol="0" labelText="Audio PoC 0.1" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Marion"
          fontsize="19.5" bold="1" italic="0" justification="36"/>
+  <TEXTBUTTON name="record button" id="477e06bd4f00f984" memberName="recordButton"
+              virtualName="" explicitFocusOrder="0" pos="104 72 150 24" buttonText="record"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
