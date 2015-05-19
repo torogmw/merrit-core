@@ -51,7 +51,6 @@ private:
     AudioTransportSource transportSource;
     AudioFormatManager formatManager;
     TimeSliceThread playingThread;
-    AudioAnalyzer audioAnalyzer = AudioAnalyzer(512);
     
     AudioSampleBuffer sampleBuffer = AudioSampleBuffer(1,RECORDSIZE); //the buffer is for store;
     AudioSampleBuffer calculateBuffer = AudioSampleBuffer(1,RECORDSIZE); //the buffer is throwing to the pitchtail

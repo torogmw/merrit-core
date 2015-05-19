@@ -10,17 +10,24 @@
 #define __merrit_core__AudioAnalyzer__
 
 #include <stdio.h>
+#include <stdint.h>
 #include "ChromaFeat.h"
+#include <iostream>
 
 class AudioAnalyzer
 {
 public:
-    AudioAnalyzer(uint32_t length);
+    AudioAnalyzer(const float *audio, uint32_t num_samples, float fs, uint32_t frame_size, uint32_t hop_size);
     ~AudioAnalyzer();
-    int Analyze(const float *buffer);
-    int numOfFrames;
+    int AnalyzeFrame(const float *buffer, float *output);
+    const float *audio;
+    float fs;
+    uint32_t frame_size;
+    uint32_t hop_size;
+    uint32_t num_frames;
     ChromaFeat *chromaFeat;
-    uint32_t length;
+    float **frame_features;
+    uint32_t frame_feature_dimension;
 };
 
 #endif /* defined(__merrit_core__AudioAnalyzer__) */
