@@ -1,9 +1,10 @@
 #include "ChromaFeat.h"
 
-ChromaFeat::ChromaFeat(uint32_t lengthArg)
+ChromaFeat::ChromaFeat(uint32_t lengthArg, float fs_)
 {
 	uint32_t i;
 	length = lengthArg;
+    fs = fs_;
 	chroma = new float[NUMBEROFCHROMES];
 
 	// We only calculate these slow math once
@@ -77,7 +78,7 @@ int ChromaFeat::Chroma(const float* buffer) {
 	// to transform midi notes into corresponding frequencies
 	// and further, k = f/delta_f to transform into FFT indices
 	float* indexBoundary = new float[NUMBEROFNOTES + 1]; 
-	float freqResolution = (float)FS / FFT_Point;
+	float freqResolution = (float)fs / FFT_Point;
 
 	// transformation from midi note to FFT index
 	for (i=0; i<=NUMBEROFNOTES; i++) 

@@ -130,7 +130,7 @@ void AudioInputSource::filePlayingControl()
     }
     
     // Do MIR here
-    AudioAnalyzer audioAnalyzer(fullBuffer.getReadPointer(0), fullBuffer.getNumSamples(), FS_MIR, 512, 256);
+    AudioAnalyzer audioAnalyzer(fullBuffer.getReadPointer(0), numSamplesCopied, FS_MIR, 512, 256);
     
 }
 

@@ -7,7 +7,6 @@
 #include <cstdio>
 #include <stdint.h>
 
-#define FS				 16000
 #define NUMBEROFCHROMES		12
 #define NUMBEROFNOTES		120
 #define _2ROOT12		1.059463094f
@@ -19,8 +18,7 @@
 class ChromaFeat {
 public:
 	int Chroma(const float* buffer);
-	//int Chroma2(const uint16_t* buffer);
-	ChromaFeat(uint32_t lengthArg);
+	ChromaFeat(uint32_t lengthArg, float fs);
 	~ChromaFeat();
 	float *chroma;
 	
@@ -31,6 +29,7 @@ protected:
 	float *powerOf2ROOT12;
 	uint32_t FFT_Point;
 	uint16_t FFT_Order;
+    float fs;
 };
 
 #endif
