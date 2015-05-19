@@ -5,6 +5,9 @@
               jucerVersion="3.1.0">
   <MAINGROUP id="NUtEzM" name="merrit-core">
     <GROUP id="{B06626E2-3868-A9E1-29DD-B6A380C16FC4}" name="Source">
+      <FILE id="v0rzbP" name="AudioAnalyzer.cpp" compile="1" resource="0"
+            file="Source/AudioAnalyzer.cpp"/>
+      <FILE id="xh6ZzY" name="AudioAnalyzer.h" compile="0" resource="0" file="Source/AudioAnalyzer.h"/>
       <FILE id="PqUm6p" name="AudioInputSource.cpp" compile="1" resource="0"
             file="Source/AudioInputSource.cpp"/>
       <FILE id="nLsKBH" name="AudioInputSource.h" compile="0" resource="0"

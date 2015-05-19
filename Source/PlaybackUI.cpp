@@ -61,7 +61,7 @@ PlaybackUI::PlaybackUI ()
 
 
     //[Constructor] You can add your own custom stuff here..
-    deviceManager.initialise(2, /* number of input channels */
+    deviceManager.initialise(1, /* number of input channels */
                              2, /* number of output channels */
                              0, /* no XML settings*/
                              true, /* select default device on failure */

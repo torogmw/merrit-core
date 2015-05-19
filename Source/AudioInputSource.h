@@ -19,6 +19,11 @@
 #define FILE_INPUT 1
 
 #define RECORDSIZE 44544
+#define FS 44100
+#define FS_MIR 11025
+#define SAMPLE_RATE FS / FS_MIR
+#define MAX_LEN 60
+#define BLOCK_SIZE 512
 
 class AudioInputSource : public AudioIODeviceCallback
 {
@@ -58,6 +63,8 @@ private:
     int bufferIndex;
     bool ok;
     
+    AudioSampleBuffer fullBuffer = AudioSampleBuffer(1, FS_MIR * MAX_LEN); // start with an empty buffer and fill with audio data, 661500 = 11025 * 60
+    int numSamplesCopied = 0;
 };
 
 #endif /* defined(__merrit_core__AudioInputSource__) */

@@ -22,6 +22,10 @@ AudioInputSource::AudioInputSource(AudioDeviceManager& deviceManager_, int choic
     bufferIndex = 0;
     ok = true;
     inputToggle=0;
+    
+    // start fresh
+    fullBuffer.clear();
+    numSamplesCopied = 0;
 }
 
 
@@ -44,7 +48,7 @@ void AudioInputSource::setFile(File audioFile)
         {
             AudioFormatReader* tempReader = formatManager.createReaderFor(audioFile);
             fileSource = new AudioFormatReaderSource(tempReader,true);
-            transportSource.setSource(fileSource,32768,&playingThread,44100);
+            transportSource.setSource(fileSource,32768,&playingThread,FS);
             //transportSource.start();
             inputToggle=1;
         }
@@ -53,6 +57,10 @@ void AudioInputSource::setFile(File audioFile)
     {
         // handling live input here
     }
+    
+    // start fresh
+    fullBuffer.clear();
+    numSamplesCopied = 0;
 }
 
 int AudioInputSource::getCurrentPitch() const
@@ -66,7 +74,6 @@ void AudioInputSource::audioDeviceIOCallback(const float **inputChannelData, int
     
     if (choice == FILE_INPUT )
     {
-        audioAnalyzer.Analyze(inputChannelData[0]);
         audioSourcePlayer.audioDeviceIOCallback (inputChannelData, totalNumInputChannels, outputChannelData, totalNumOutputChannels, numSamples);
         //pass the output to the player
         
@@ -97,6 +104,19 @@ void AudioInputSource::audioDeviceIOCallback(const float **inputChannelData, int
         
     }
     
+    // stereo to mono, down-sampling
+    // for now it doesn't do MIR while reading audio input
+    // FIXME: this function is running forever, how to turn the loop off when file read is done / record finishes?
+    if (numSamplesCopied < 12 * FS_MIR) { // hard-code termination now
+        for (int i=0; i < BLOCK_SIZE; i += SAMPLE_RATE) {
+            float value = inputChannelData[0][i];
+            if (totalNumInputChannels == 2) {
+                value = 0.5 * (inputChannelData[0][i] + inputChannelData[1][i]);
+            }
+            fullBuffer.copyFrom(0, numSamplesCopied, &value, 1);
+            numSamplesCopied++;
+        }
+    }
 }
 
 void AudioInputSource::filePlayingControl()
@@ -108,6 +128,7 @@ void AudioInputSource::filePlayingControl()
         else
             transportSource.start();
     }
+    
 }
 
 
