@@ -130,6 +130,7 @@ void AudioInputSource::filePlayingControl()
     }
     
     // Do MIR here
+    //float *audio, uint32_t num_samples, float fs, uint32_t frame_size, uint32_t hop_size
     AudioAnalyzer audioAnalyzer(fullBuffer.getReadPointer(0), numSamplesCopied, FS_MIR, 512, 256);
     
 }

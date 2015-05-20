@@ -15,42 +15,37 @@ AudioAnalyzer::AudioAnalyzer(const float *audio_, uint32_t num_samples, float fs
     frame_size = frame_size_;
     hop_size = hop_size_;
     num_frames = (num_samples - frame_size) / hop_size + 1;
-    chromaFeat = new ChromaFeat(frame_size, fs);
-    frame_features = new float*[num_frames];
-    frame_feature_dimension = NUMBEROFNOTES;
+
+    char_t * onset_method = "default";
+    aubio_onset_t *o = new_aubio_onset(onset_method, frame_size, hop_size, fs);
+    fvec_t *onset = new_fvec(1);
+    smpl_t onset_threshold = 0.;
     
-    // MIR - frame-level analysis
-    for (int i=0; i<num_frames; i++) {
-        frame_features[i] = new float[frame_feature_dimension];
-        AnalyzeFrame(audio+i*hop_size, frame_features[i]);
+    char_t * pitch_method = "default";
+    aubio_pitch_t *pitch = new_aubio_pitch (pitch_method, frame_size * 4, hop_size, fs);
+    fvec_t *pitch_obuf = new_fvec(1);
+    smpl_t pitch_tolerance = 0.;
+    
+    fvec_t *note_buffer;
+    fvec_t *note_buffer2;
+    uint_t median = 6;
+    if (median) {
+        note_buffer = new_fvec (median);
+        note_buffer2 = new_fvec (median);
     }
     
-    for (int i=0; i<num_frames; i++) {
-        float max_val = 0.0;
-        int max_idx = -1;
-        for (int j=0; j<frame_feature_dimension; j++) {
-            if (frame_features[i][j] > max_val) {
-                max_val = frame_features[i][j];
-                max_idx = j;
-            }
-        }
-        printf("%i\t", max_idx);
-    }
+    fvec_t *buffer = new_fvec(frame_size);
+    uint_t i = 0;
+    buffer->data = (smpl_t *)audio + i;
     
+    smpl_t new_pitch, curlevel;
+    aubio_onset_do(o, buffer, onset);
+    
+    aubio_pitch_do (pitch, buffer, pitch_obuf);
+    new_pitch = fvec_get_sample(pitch_obuf, 0);
 }
 
 AudioAnalyzer::~AudioAnalyzer()
 {
-    delete chromaFeat;
-    for (int i=0; i<num_frames; i++) {
-        delete []frame_features[i];
-    }
-    delete frame_features;
 }
 
-int AudioAnalyzer::AnalyzeFrame(const float *buffer, float* output)
-{
-    chromaFeat->Chroma(buffer);
-    memcpy(output, chromaFeat->chroma, frame_feature_dimension * sizeof(float));
-    return 0;
-}
