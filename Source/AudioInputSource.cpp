@@ -51,16 +51,18 @@ void AudioInputSource::setFile(File audioFile)
             transportSource.setSource(fileSource,32768,&playingThread,FS);
             //transportSource.start();
             inputToggle=1;
+            
+            // do MIR here
+            fullBuffer.clear();
+            tempReader->read(&fullBuffer, 0, tempReader->lengthInSamples, 0, true, false);
+            numSamplesCopied = tempReader->lengthInSamples;
+            AudioAnalyzer audioAnalyzer(fullBuffer.getReadPointer(0), numSamplesCopied, FS_MIR, 512, 256);
         }
     }
     if (choice == LIVE_INPUT)
     {
         // handling live input here
     }
-    
-    // start fresh
-    fullBuffer.clear();
-    numSamplesCopied = 0;
 }
 
 int AudioInputSource::getCurrentPitch() const
@@ -103,20 +105,6 @@ void AudioInputSource::audioDeviceIOCallback(const float **inputChannelData, int
         }
         
     }
-    
-    // stereo to mono, down-sampling
-    // for now it doesn't do MIR while reading audio input
-    // FIXME: this function is running forever, how to turn the loop off when file read is done / record finishes?
-    if (numSamplesCopied < 12 * FS_MIR) { // hard-code termination now
-        for (int i=0; i < BLOCK_SIZE; i += SAMPLE_RATE) {
-            float value = inputChannelData[0][i];
-            if (totalNumInputChannels == 2) {
-                value = 0.5 * (inputChannelData[0][i] + inputChannelData[1][i]);
-            }
-            fullBuffer.copyFrom(0, numSamplesCopied, &value, 1);
-            numSamplesCopied++;
-        }
-    }
 }
 
 void AudioInputSource::filePlayingControl()
@@ -128,10 +116,6 @@ void AudioInputSource::filePlayingControl()
         else
             transportSource.start();
     }
-    
-    // Do MIR here
-    //float *audio, uint32_t num_samples, float fs, uint32_t frame_size, uint32_t hop_size
-    AudioAnalyzer audioAnalyzer(fullBuffer.getReadPointer(0), numSamplesCopied, FS_MIR, 512, 256);
     
 }
 
