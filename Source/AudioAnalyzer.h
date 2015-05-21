@@ -14,13 +14,13 @@
 #include <iostream>
 #include <aubio/aubio.h>
 
+#define FS_MIR 44100
+
 class AudioAnalyzer
 {
 public:
     AudioAnalyzer(const float *audio, uint32_t num_samples, float fs, uint32_t frame_size, uint32_t hop_size);
     ~AudioAnalyzer();
-    const float *audio;
-    float fs;
     uint32_t frame_size;
     uint32_t hop_size;
     uint32_t num_frames;

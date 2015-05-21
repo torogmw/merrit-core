@@ -56,7 +56,7 @@ void AudioInputSource::setFile(File audioFile)
             fullBuffer.clear();
             tempReader->read(&fullBuffer, 0, tempReader->lengthInSamples, 0, true, false);
             numSamplesCopied = tempReader->lengthInSamples;
-            AudioAnalyzer audioAnalyzer(fullBuffer.getReadPointer(0), numSamplesCopied, FS_MIR, 512, 256);
+            AudioAnalyzer audioAnalyzer(fullBuffer.getReadPointer(0), numSamplesCopied, FS, 4096, 2048);
         }
     }
     if (choice == LIVE_INPUT)

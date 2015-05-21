@@ -20,7 +20,6 @@
 
 #define RECORDSIZE 44544
 #define FS 44100
-#define FS_MIR 44100
 #define SAMPLE_RATE FS / FS_MIR
 #define MAX_LEN 60
 #define BLOCK_SIZE 512
