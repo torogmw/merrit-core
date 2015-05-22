@@ -122,7 +122,7 @@ void AudioInputSource::filePlayingControl()
 
 int AudioInputSource::getCurrentTech() const
 {
-
+    return 0;
 }
 
 void AudioInputSource::setThredhold(float sliderValue)

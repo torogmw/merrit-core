@@ -94,7 +94,7 @@ void AudioRecorder::audioDeviceIOCallback (const float** inputChannelData, int /
         activeWriter->write (inputChannelData, numSamples);
 
         // Create an AudioSampleBuffer to wrap our incomming data, note that this does no allocations or copies, it simply references our input data
-        const AudioSampleBuffer buffer (const_cast<float**> (inputChannelData), numOutputChannels, numSamples);
+        const AudioSampleBuffer buffer (const_cast<float**> (inputChannelData), 1, numSamples);
         nextSampleNum += numSamples;
     }
 
