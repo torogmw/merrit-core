@@ -69,6 +69,7 @@ private:
     ScopedPointer<Label> resultLabel;
     ScopedPointer<Label> title;
     ScopedPointer<TextButton> recordButton;
+    ScopedPointer<TextButton> xmlButton;
 
 
     //==============================================================================

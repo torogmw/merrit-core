@@ -56,6 +56,10 @@ PlaybackUI::PlaybackUI ()
     recordButton->setButtonText (TRANS("record"));
     recordButton->addListener (this);
 
+    addAndMakeVisible (xmlButton = new TextButton ("xml button"));
+    xmlButton->setButtonText (TRANS("readXML"));
+    xmlButton->addListener (this);
+
 
     //[UserPreSize]
     playStopButton->setVisible(false);        // invisible by default
@@ -84,6 +88,7 @@ PlaybackUI::~PlaybackUI()
     resultLabel = nullptr;
     title = nullptr;
     recordButton = nullptr;
+    xmlButton = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -107,11 +112,12 @@ void PlaybackUI::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    playStopButton->setBounds (104, 168, 150, 24);
+    playStopButton->setBounds (104, 240, 150, 24);
     loadButton->setBounds (104, 120, 150, 24);
-    resultLabel->setBounds (104, 256, 152, 224);
+    resultLabel->setBounds (104, 336, 152, 224);
     title->setBounds (64, 24, 224, 40);
     recordButton->setBounds (104, 72, 150, 24);
+    xmlButton->setBounds (104, 176, 150, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -151,6 +157,11 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
         else
             startRecording();
         //[/UserButtonCode_recordButton]
+    }
+    else if (buttonThatWasClicked == xmlButton)
+    {
+        //[UserButtonCode_xmlButton] -- add your button handler code here..
+        //[/UserButtonCode_xmlButton]
     }
 
     //[UserbuttonClicked_Post]
@@ -197,13 +208,13 @@ BEGIN_JUCER_METADATA
                  fixedSize="1" initialWidth="360" initialHeight="640">
   <BACKGROUND backgroundColour="ffffffff"/>
   <TEXTBUTTON name="play / stop" id="691427fc69b5adc6" memberName="playStopButton"
-              virtualName="" explicitFocusOrder="0" pos="104 168 150 24" buttonText="play / stop"
+              virtualName="" explicitFocusOrder="0" pos="104 240 150 24" buttonText="play / stop"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="load button" id="1d59d8ea76ceba03" memberName="loadButton"
               virtualName="" explicitFocusOrder="0" pos="104 120 150 24" buttonText="load"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <LABEL name="result label" id="f3671d4a4efe8c7b" memberName="resultLabel"
-         virtualName="" explicitFocusOrder="0" pos="104 256 152 224" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="104 336 152 224" edTextCol="ff000000"
          edBkgCol="0" labelText="result" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
          bold="0" italic="0" justification="12"/>
@@ -214,6 +225,9 @@ BEGIN_JUCER_METADATA
          fontsize="19.5" bold="1" italic="0" justification="36"/>
   <TEXTBUTTON name="record button" id="477e06bd4f00f984" memberName="recordButton"
               virtualName="" explicitFocusOrder="0" pos="104 72 150 24" buttonText="record"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="xml button" id="25fd44335f65258a" memberName="xmlButton"
+              virtualName="" explicitFocusOrder="0" pos="104 176 150 24" buttonText="readXML"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
