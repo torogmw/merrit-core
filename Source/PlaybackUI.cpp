@@ -75,6 +75,7 @@ PlaybackUI::PlaybackUI ()
                              true, /* select default device on failure */
                              String::empty, /* preferred device name */
                              0 /* preferred setup options */);
+    inputSource = new AudioInputSource(deviceManager,1);
     //[/Constructor]
 }
 
@@ -92,6 +93,7 @@ PlaybackUI::~PlaybackUI()
 
 
     //[Destructor]. You can add your own custom destruction code here..
+    delete inputSource;
     //[/Destructor]
 }
 
@@ -136,13 +138,11 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == loadButton)
     {
         //[UserButtonCode_loadButton] -- add your button handler code here..
-        inputSource= nullptr;
         // init the file input here
         FileChooser chooser (("Choose audio file to open"),File::getSpecialLocation(File::userMusicDirectory),"*",true);
         chooser.browseForFileToOpen();
         if(chooser.getResult().exists())
         {
-            inputSource = new AudioInputSource(deviceManager,1);
             inputSource->setFile(chooser.getResult());
             resultLabel->setText("File choosed", dontSendNotification);
             playStopButton->setVisible(true);

@@ -26,6 +26,7 @@ AudioInputSource::AudioInputSource(AudioDeviceManager& deviceManager_, int choic
     // start fresh
     fullBuffer.clear();
     numSamplesCopied = 0;
+    audioAnalyzer = new AudioAnalyzer(FS_MIR, 512);
 }
 
 
@@ -56,7 +57,14 @@ void AudioInputSource::setFile(File audioFile)
             fullBuffer.clear();
             tempReader->read(&fullBuffer, 0, tempReader->lengthInSamples, 0, true, false);
             numSamplesCopied = tempReader->lengthInSamples;
-            AudioAnalyzer audioAnalyzer(fullBuffer.getReadPointer(0), numSamplesCopied, FS, 4096, 2048);
+            
+            float *feature_out = new float[audioAnalyzer->feature_size];
+            audioAnalyzer->FrameAnalysis(fullBuffer.getReadPointer(0), feature_out);
+            for (int i=0; i<audioAnalyzer->feature_size; i++) {
+                printf("%f\t", feature_out[i]);
+            }
+            delete [] feature_out;
+            
         }
     }
     if (choice == LIVE_INPUT)

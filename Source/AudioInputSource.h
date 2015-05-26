@@ -63,6 +63,7 @@ private:
     
     AudioSampleBuffer fullBuffer = AudioSampleBuffer(1, FS_MIR * MAX_LEN); // start with an empty buffer and fill with audio data, 661500 = 11025 * 60
     int numSamplesCopied = 0;
+    AudioAnalyzer *audioAnalyzer;
 };
 
 #endif /* defined(__merrit_core__AudioInputSource__) */
