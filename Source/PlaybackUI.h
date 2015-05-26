@@ -24,6 +24,7 @@
 #include "JuceHeader.h"
 #include "AudioInputSource.h"
 #include "AudioRecorder.h"
+#include "MusicXmlParser.h"
 //[/Headers]
 
 
@@ -61,6 +62,7 @@ private:
     AudioDeviceManager deviceManager;
     ScopedPointer<AudioInputSource> inputSource;
     ScopedPointer<AudioRecorder> recorder;
+    ScopedPointer<MusicXmlParser> notation;
     //[/UserVariables]
 
     //==============================================================================
