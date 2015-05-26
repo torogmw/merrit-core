@@ -15,19 +15,12 @@
 #include "JuceHeader.h"
 #include "AudioAnalyzer.h"
 
-#define LIVE_INPUT 0
-#define FILE_INPUT 1
-
-#define RECORDSIZE 44544
-#define FS 44100
-#define SAMPLE_RATE FS / FS_MIR
-#define MAX_LEN 60
-#define BLOCK_SIZE 512
+#define FS 11025
 
 class AudioInputSource : public AudioIODeviceCallback
 {
 public:
-    AudioInputSource(AudioDeviceManager& deviceManager, int choice);
+    AudioInputSource(AudioDeviceManager& deviceManager);
     ~AudioInputSource();
     void audioDeviceIOCallback(const float** inputChannelData,
                                int totalNumInputChannels,
@@ -38,9 +31,6 @@ public:
     void audioDeviceStopped();
     void setFile(File audioFile);
     void filePlayingControl();
-    int getCurrentPitch() const;
-    int getCurrentTech() const;
-    void setThredhold(float sliderValue);
 
 private:
     
@@ -50,20 +40,9 @@ private:
     AudioTransportSource transportSource;
     AudioFormatManager formatManager;
     TimeSliceThread playingThread;
-    
-    AudioSampleBuffer sampleBuffer = AudioSampleBuffer(1,RECORDSIZE); //the buffer is for store;
-    AudioSampleBuffer calculateBuffer = AudioSampleBuffer(1,RECORDSIZE); //the buffer is throwing to the pitchtail
-    AudioSampleBuffer tempBuffer = AudioSampleBuffer(1,RECORDSIZE); // this buffer is for sliding buffer window
-    
-    int choice;
-    bool inputToggle;
-    bool bufferReady;
-    int bufferIndex;
-    bool ok;
-    
-    AudioSampleBuffer fullBuffer = AudioSampleBuffer(1, FS_MIR * MAX_LEN); // start with an empty buffer and fill with audio data, 661500 = 11025 * 60
-    int numSamplesCopied = 0;
     AudioAnalyzer *audioAnalyzer;
+    int numSamplesReadFromFile;
+    AudioSampleBuffer fullBuffer = AudioSampleBuffer(1, FS * 60); // start with an empty buffer and fill with audio data, 661500 = 11025 * 60
 };
 
 #endif /* defined(__merrit_core__AudioInputSource__) */

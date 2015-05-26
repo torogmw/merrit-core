@@ -69,13 +69,14 @@ PlaybackUI::PlaybackUI ()
 
 
     //[Constructor] You can add your own custom stuff here..
+    audioDeviceSetup.bufferSize = 512; // 0.04s if sample rate is 11.025kHz
     deviceManager.initialise(1, /* number of input channels */
                              2, /* number of output channels */
                              0, /* no XML settings*/
                              true, /* select default device on failure */
                              String::empty, /* preferred device name */
-                             0 /* preferred setup options */);
-    inputSource = new AudioInputSource(deviceManager,1);
+                             &audioDeviceSetup /* preferred setup options */);
+    inputSource = new AudioInputSource(deviceManager);
     //[/Constructor]
 }
 

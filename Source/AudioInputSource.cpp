@@ -8,144 +8,84 @@
 
 #include "AudioInputSource.h"
 
-AudioInputSource::AudioInputSource(AudioDeviceManager& deviceManager_, int choice_):deviceManager(deviceManager_), playingThread("audio Input source"),choice(choice_)
+AudioInputSource::AudioInputSource(AudioDeviceManager& deviceManager_):deviceManager(deviceManager_), playingThread("audio Input source")
 {
-    if (choice == FILE_INPUT)
-    {
-        formatManager.registerBasicFormats();
-        audioSourcePlayer.setSource(&transportSource);
-    }
-    deviceManager.addAudioCallback(this);
+    formatManager.registerBasicFormats();
+    audioSourcePlayer.setSource(&transportSource);
     playingThread.startThread();
-    bufferReady = false;
-    
-    bufferIndex = 0;
-    ok = true;
-    inputToggle=0;
-    
-    // start fresh
-    fullBuffer.clear();
-    numSamplesCopied = 0;
     audioAnalyzer = new AudioAnalyzer(FS_MIR, 512);
+    numSamplesReadFromFile = 0;
 }
 
 
 AudioInputSource::~AudioInputSource()
 {
     deviceManager.removeAudioCallback(this);
-    if(choice == FILE_INPUT)
-    {
-        transportSource.setSource(0);
-        deleteAndZero(fileSource);
-        audioSourcePlayer.setSource(0);
-    }
+    transportSource.setSource(0);
+    deleteAndZero(fileSource);
+    audioSourcePlayer.setSource(0);
 }
 
 void AudioInputSource::setFile(File audioFile)
 {
-    if (choice == FILE_INPUT)
+    if(audioFile.exists())
     {
-        if(audioFile.exists())
-        {
-            AudioFormatReader* tempReader = formatManager.createReaderFor(audioFile);
-            fileSource = new AudioFormatReaderSource(tempReader,true);
-            transportSource.setSource(fileSource,32768,&playingThread,FS);
-            //transportSource.start();
-            inputToggle=1;
-            
-            // do MIR here
-            fullBuffer.clear();
-            tempReader->read(&fullBuffer, 0, tempReader->lengthInSamples, 0, true, false);
-            numSamplesCopied = tempReader->lengthInSamples;
-            
-            float *feature_out = new float[audioAnalyzer->feature_size];
-            audioAnalyzer->FrameAnalysis(fullBuffer.getReadPointer(0), feature_out);
-            for (int i=0; i<audioAnalyzer->feature_size; i++) {
-                printf("%f\t", feature_out[i]);
+        AudioFormatReader* tempReader = formatManager.createReaderFor(audioFile);
+        fileSource = new AudioFormatReaderSource(tempReader,true);
+        transportSource.setSource(fileSource,32768,&playingThread,FS);
+//        deviceManager.addAudioCallback(this); // will call audioDeviceIOCallback
+        
+        // for file input, get the whole buffer and run MIR here
+        fullBuffer.clear();
+        tempReader->read(&fullBuffer, 0, tempReader->lengthInSamples, 0, true, false);
+        numSamplesReadFromFile = tempReader->lengthInSamples;
+        for (int i=0; (i+audioAnalyzer->frame_size) < numSamplesReadFromFile; i+=audioAnalyzer->hop_size) {
+            audioAnalyzer->UpdateFrameBuffer(fullBuffer.getReadPointer(0, 0), audioAnalyzer->hop_size);
+            float features[120];
+            audioAnalyzer->FrameAnalysis(audioAnalyzer->frame_buffer, features);
+            for (int j=0; j<120; j++) {
+                printf("%f\t", features[j]);
             }
-            delete [] feature_out;
-            
+            printf("\n");
         }
     }
-    if (choice == LIVE_INPUT)
-    {
-        // handling live input here
-    }
-}
-
-int AudioInputSource::getCurrentPitch() const
-{
-    return 0;
 }
 
 void AudioInputSource::audioDeviceIOCallback(const float **inputChannelData, int totalNumInputChannels, float **outputChannelData, int totalNumOutputChannels, int numSamples)
 {
+    audioSourcePlayer.audioDeviceIOCallback (inputChannelData, totalNumInputChannels, outputChannelData, totalNumOutputChannels, numSamples);
+    //pass the output to the player
     
-    
-    if (choice == FILE_INPUT )
-    {
-        audioSourcePlayer.audioDeviceIOCallback (inputChannelData, totalNumInputChannels, outputChannelData, totalNumOutputChannels, numSamples);
-        //pass the output to the player
-        
-    }
-    if (choice == LIVE_INPUT)
-    {
-        //std::cout<<*inputChannelData[0]<<std::endl;
-        
-        for (int i = 0; i < numSamples; ++i)
-            for (int j = totalNumOutputChannels; --j >= 0;)
-                outputChannelData[j][i] = 0;
-        
-        if (bufferReady == true){
-            bufferReady = false;
-        }
-        
-        if (bufferReady == false)
-        {
-            sampleBuffer.clear();
-            sampleBuffer.copyFrom(0, 0, inputChannelData[0], numSamples);
-            tempBuffer.copyFrom(0, 0, calculateBuffer, 0, numSamples, RECORDSIZE - numSamples);
-            calculateBuffer.clear();
-            tempBuffer.copyFrom(0, RECORDSIZE - numSamples, sampleBuffer, 0, 0, numSamples);
-            calculateBuffer.copyFrom(0, 0, tempBuffer, 0, 0, RECORDSIZE);
-            tempBuffer.clear();
-            bufferReady = true;
-        }
-        
-    }
+    // won't work for file input
+//    numSamplesReadFromFile += numSamples;
+//    if (audioAnalyzer->UpdateFrameBuffer(inputChannelData[0], numSamples) < 0) {
+//        printf("oh no!\n");
+//    }
+//    float features[120];
+//    audioAnalyzer->FrameAnalysis(audioAnalyzer->frame_buffer, features);
+//    if (numSamplesReadFromFile > fileSource->getTotalLength()) {
+//        deviceManager.removeAudioCallback(this);
+//    }
 }
 
 void AudioInputSource::filePlayingControl()
 {
-    if(choice==FILE_INPUT)
-    {
-        if(transportSource.isPlaying())
-            transportSource.stop();
-        else
-            transportSource.start();
-    }
-    
-}
-
-
-int AudioInputSource::getCurrentTech() const
-{
-    return 0;
-}
-
-void AudioInputSource::setThredhold(float sliderValue)
-{
-    std::cout<<"set threshold: "<<sliderValue<<std::endl;
+    if(transportSource.isPlaying())
+        transportSource.stop();
+    else
+        transportSource.start();
 }
 
 void AudioInputSource::audioDeviceAboutToStart(AudioIODevice* device)
 {
-    if (choice == FILE_INPUT)
-        audioSourcePlayer.audioDeviceAboutToStart (device);
+    audioSourcePlayer.audioDeviceAboutToStart (device);
+    
+    // prepare for a new recording
+    numSamplesReadFromFile = 0;
 }
 
 void AudioInputSource::audioDeviceStopped()
 {
-    if (choice == FILE_INPUT)
-        audioSourcePlayer.audioDeviceStopped();
+    audioSourcePlayer.audioDeviceStopped();
+    printf("Run dynamic programming here!");
 }

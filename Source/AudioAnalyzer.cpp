@@ -48,6 +48,8 @@ AudioAnalyzer::AudioAnalyzer(float fs, uint32_t block_size)
     }
     
     feature_size = NUM_NOTES;
+    
+    frame_buffer = new float[frame_size];
 }
 
 AudioAnalyzer::~AudioAnalyzer()
@@ -55,6 +57,21 @@ AudioAnalyzer::~AudioAnalyzer()
     delete [] FFT_bin_2_MIDI_note_mapping;
     delete [] hammingWin;
     delete fft;
+    delete [] frame_buffer;
+}
+
+int AudioAnalyzer::UpdateFrameBuffer(const float *new_buffer, uint32_t buffer_size)
+{
+    if (buffer_size != hop_size) {
+        return -1;
+    }
+    for (int i=0; i<frame_size-hop_size; i++) {
+        frame_buffer[i] = frame_buffer[i+hop_size];
+    }
+    for (int i=0; i<hop_size; i++) {
+        frame_buffer[frame_size-hop_size+i] = new_buffer[i];
+    }
+    return 0;
 }
 
 int AudioAnalyzer::FrameAnalysis(const float *buffer, float *out)

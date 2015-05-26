@@ -59,6 +59,7 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     AudioDeviceManager deviceManager;
+    juce::AudioDeviceManager::AudioDeviceSetup audioDeviceSetup;
     ScopedPointer<AudioInputSource> inputSource;
     ScopedPointer<AudioRecorder> recorder;
     //[/UserVariables]

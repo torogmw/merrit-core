@@ -33,6 +33,7 @@ class AudioAnalyzer
 public:
     AudioAnalyzer(float fs, uint32_t block_size);
     ~AudioAnalyzer();
+    int UpdateFrameBuffer(const float *new_buffer, uint32_t buffer_size);
     int FrameAnalysis(const float *buffer, float *out);
     uint32_t frame_size;
     uint32_t hop_size;
@@ -47,6 +48,7 @@ public:
     float *hammingWin;
     SplitRadixFFT *fft;
     uint32_t feature_size;
+    float *frame_buffer;
 };
 
 #endif /* defined(__merrit_core__AudioAnalyzer__) */
