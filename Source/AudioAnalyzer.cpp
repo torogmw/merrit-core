@@ -141,6 +141,7 @@ int AudioAnalyzer::SubbandAnalysis(std::vector<float> &subband_signal, uint32_t 
     }
     
     float *flux = new float[frame_num];
+    memset(flux, 0, sizeof(float)*frame_num);
     uint32_t i, j;
     float energy_ahead = 0.f, energy_behind = 0.f;
     for (i=0; i<SPECTRAL_FLUX_SIZE; i++) {
@@ -160,31 +161,35 @@ int AudioAnalyzer::SubbandAnalysis(std::vector<float> &subband_signal, uint32_t 
     }
     
     for (i=SPECTRAL_FLUX_SIZE; i<frame_num-SPECTRAL_FLUX_SIZE+1; i++) {
-        energy_ahead = 0.f;
-        for (j=i; j<i+SPECTRAL_FLUX_SIZE; j++) {
-            energy_ahead += subband_signal[j];
+        if (subband_signal[i] > 0) {
+            energy_ahead = 0.f;
+            for (j=i; j<i+SPECTRAL_FLUX_SIZE; j++) {
+                energy_ahead += subband_signal[j];
+            }
+            energy_ahead /= SPECTRAL_FLUX_SIZE;
+            energy_behind = 0.f;
+            for (j=i-SPECTRAL_FLUX_SIZE; j<i; j++) {
+                energy_behind += subband_signal[j];
+            }
+            energy_behind /= SPECTRAL_FLUX_SIZE;
+            flux[i] = energy_ahead > energy_behind ? energy_ahead - energy_behind : 0.f;
         }
-        energy_ahead /= SPECTRAL_FLUX_SIZE;
-        energy_behind = 0.f;
-        for (j=i-SPECTRAL_FLUX_SIZE; j<i; j++) {
-            energy_behind += subband_signal[j];
-        }
-        energy_behind /= SPECTRAL_FLUX_SIZE;
-        flux[i] = energy_ahead > energy_behind ? energy_ahead - energy_behind : 0.f;
     }
     
     for (i=frame_num-SPECTRAL_FLUX_SIZE+1; i<frame_num; i++) {
-        energy_ahead = 0.f;
-        for (j=i; j<frame_num; j++) {
-            energy_ahead += subband_signal[j];
+        if (subband_signal[i] > 0) {
+            energy_ahead = 0.f;
+            for (j=i; j<frame_num; j++) {
+                energy_ahead += subband_signal[j];
+            }
+            energy_ahead /= (frame_num - i);
+            energy_behind = 0.f;
+            for (j=i-SPECTRAL_FLUX_SIZE; j<i; j++) {
+                energy_behind += subband_signal[j];
+            }
+            energy_behind /= SPECTRAL_FLUX_SIZE;
+            flux[i] = energy_ahead > energy_behind ? energy_ahead - energy_behind : 0.f;
         }
-        energy_ahead /= (frame_num - i);
-        energy_behind = 0.f;
-        for (j=i-SPECTRAL_FLUX_SIZE; j<i; j++) {
-            energy_behind += subband_signal[j];
-        }
-        energy_behind /= SPECTRAL_FLUX_SIZE;
-        flux[i] = energy_ahead > energy_behind ? energy_ahead - energy_behind : 0.f;
     }
     
     // find local peaks in flux
