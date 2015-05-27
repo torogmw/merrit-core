@@ -212,11 +212,20 @@ int AudioAnalyzer::SubbandAnalysis(std::vector<float> &subband_signal, uint32_t 
     return 0;
 }
 
+int AudioAnalyzer::SetScore(struct ScoreNote *score, uint32_t note_num)
+{
+    for (int i = 0; i < note_num; ++i) {
+        score_notes.push_back(score[i]);
+    }
+    return 0;
+}
+
 int AudioAnalyzer::Clear()
 {
     for (int i=0; i<feature_size; i++) {
         subband_signals[i].clear();
     }
     frame_num = 0;
+    score_notes.clear();
     return 0;
 }

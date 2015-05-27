@@ -36,6 +36,12 @@ struct AudioNote
     float valence;
 };
 
+struct ScoreNote
+{
+    float relative_time;
+    uint32_t midi_pitch;
+};
+
 class AudioAnalyzer
 {
 public:
@@ -45,6 +51,8 @@ public:
     int FrameAnalysis(const float *buffer);
     int FrameAnalysis(const float *buffer, float *out);
     int SubbandAnalysis(std::vector<float> &subband_signal, uint32_t midi_note); // find notes
+    int SetScore(struct ScoreNote *score, uint32_t note_num);
+    int AudioScoreAlignment();
     int Clear();
     uint32_t frame_size;
     uint32_t hop_size;
@@ -63,6 +71,7 @@ public:
     std::vector<float> *subband_signals;
     uint32_t frame_num;
     std::vector<AudioNote> audio_notes;
+    std::vector<ScoreNote> score_notes;
 };
 
 #endif /* defined(__merrit_core__AudioAnalyzer__) */
