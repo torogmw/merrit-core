@@ -29,6 +29,13 @@
 #define LOG_2ROOT12         0.057762265 // log(_2ROOT12)
 #define SPECTRAL_FLUX_SIZE  5
 
+struct AudioNote
+{
+    uint32_t frame_index;
+    uint32_t midi_pitch;
+    float valence;
+};
+
 class AudioAnalyzer
 {
 public:
@@ -37,6 +44,7 @@ public:
     int UpdateFrameBuffer(const float *new_buffer, uint32_t buffer_size);
     int FrameAnalysis(const float *buffer);
     int FrameAnalysis(const float *buffer, float *out);
+    int SubbandAnalysis(std::vector<float> &subband_signal, uint32_t midi_note); // find notes
     int Clear();
     uint32_t frame_size;
     uint32_t hop_size;
@@ -54,6 +62,7 @@ public:
     float *frame_buffer;
     std::vector<float> *subband_signals;
     uint32_t frame_num;
+    std::vector<AudioNote> audio_notes;
 };
 
 #endif /* defined(__merrit_core__AudioAnalyzer__) */

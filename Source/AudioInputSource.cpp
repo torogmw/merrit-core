@@ -50,9 +50,13 @@ void AudioInputSource::setFile(File audioFile)
             audioAnalyzer->FrameAnalysis(audioAnalyzer->frame_buffer);
         }
         
-//        for (int i=0; i<audioAnalyzer->frame_num; i++) {
-//            printf("%f\n", audioAnalyzer->subband_signals[68-audioAnalyzer->min_note][i]);
-//        }
+        for (int i=0; i<audioAnalyzer->feature_size; i++) {
+            audioAnalyzer->SubbandAnalysis(audioAnalyzer->subband_signals[i], i+audioAnalyzer->min_note);
+        }
+    
+        for (int i=0; i<audioAnalyzer->audio_notes.size(); i++) {
+            printf("%u %u %f\n", audioAnalyzer->audio_notes[i].frame_index, audioAnalyzer->audio_notes[i].midi_pitch, audioAnalyzer->audio_notes[i].valence);
+        }
     }
 }
 

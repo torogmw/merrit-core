@@ -134,6 +134,79 @@ int AudioAnalyzer::FrameAnalysis(const float *buffer, float *out)
     return 0;
 }
 
+int AudioAnalyzer::SubbandAnalysis(std::vector<float> &subband_signal, uint32_t midi_note)
+{
+    if (frame_num < SPECTRAL_FLUX_SIZE) {
+        printf("spectral flux size too small!\n");
+    }
+    
+    float *flux = new float[frame_num];
+    uint32_t i, j;
+    float energy_ahead = 0.f, energy_behind = 0.f;
+    for (i=0; i<SPECTRAL_FLUX_SIZE; i++) {
+        if (subband_signal[i] > 0) {
+            energy_ahead = 0.f;
+            for (j=i; j<i+SPECTRAL_FLUX_SIZE; j++) {
+                energy_ahead += subband_signal[j];
+            }
+            energy_ahead /= (SPECTRAL_FLUX_SIZE-i);
+            energy_behind = 0.f;
+            for (j=0; j<i; j++) {
+                energy_behind += subband_signal[j];
+            }
+            energy_behind = i > 0? energy_behind / i : 0.f;
+            flux[i] = energy_ahead > energy_behind ? energy_ahead - energy_behind : 0.f;
+        }
+    }
+    
+    for (i=SPECTRAL_FLUX_SIZE; i<frame_num-SPECTRAL_FLUX_SIZE+1; i++) {
+        energy_ahead = 0.f;
+        for (j=i; j<i+SPECTRAL_FLUX_SIZE; j++) {
+            energy_ahead += subband_signal[j];
+        }
+        energy_ahead /= SPECTRAL_FLUX_SIZE;
+        energy_behind = 0.f;
+        for (j=i-SPECTRAL_FLUX_SIZE; j<i; j++) {
+            energy_behind += subband_signal[j];
+        }
+        energy_behind /= SPECTRAL_FLUX_SIZE;
+        flux[i] = energy_ahead > energy_behind ? energy_ahead - energy_behind : 0.f;
+    }
+    
+    for (i=frame_num-SPECTRAL_FLUX_SIZE+1; i<frame_num; i++) {
+        energy_ahead = 0.f;
+        for (j=i; j<frame_num; j++) {
+            energy_ahead += subband_signal[j];
+        }
+        energy_ahead /= (frame_num - i);
+        energy_behind = 0.f;
+        for (j=i-SPECTRAL_FLUX_SIZE; j<i; j++) {
+            energy_behind += subband_signal[j];
+        }
+        energy_behind /= SPECTRAL_FLUX_SIZE;
+        flux[i] = energy_ahead > energy_behind ? energy_ahead - energy_behind : 0.f;
+    }
+    
+    // find local peaks in flux
+    if (flux[0] > 0) {
+        struct AudioNote audio_note = {0, midi_note, subband_signal[0]};
+        audio_notes.push_back(audio_note);
+    }
+    for (i=1; i<frame_num-1; i++) {
+        if (flux[i-1] < flux[i] && flux[i] > flux[i+1]) {
+            struct AudioNote audio_note = {i, midi_note, subband_signal[i]};
+            audio_notes.push_back(audio_note);
+        }
+    }
+    if (flux[frame_num-2] < flux[frame_num-1]) {
+        struct AudioNote audio_note = {frame_num-1, midi_note, subband_signal[frame_num-1]};
+        audio_notes.push_back(audio_note);
+    }
+    
+    delete [] flux;
+    return 0;
+}
+
 int AudioAnalyzer::Clear()
 {
     for (int i=0; i<feature_size; i++) {
