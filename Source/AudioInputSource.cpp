@@ -39,15 +39,20 @@ void AudioInputSource::setFile(File audioFile)
         fullBuffer.clear();
         tempReader->read(&fullBuffer, 0, tempReader->lengthInSamples, 0, true, false);
         numSamplesReadFromFile = tempReader->lengthInSamples;
+        
+//        for (int i=0; i<numSamplesReadFromFile; i++) {
+//            printf("%f\n", fullBuffer.getReadPointer(0, i));
+//        }
+        
+        audioAnalyzer->Clear();
         for (int i=0; (i+audioAnalyzer->frame_size) < numSamplesReadFromFile; i+=audioAnalyzer->hop_size) {
-            audioAnalyzer->UpdateFrameBuffer(fullBuffer.getReadPointer(0, 0), audioAnalyzer->hop_size);
-            float features[120];
-            audioAnalyzer->FrameAnalysis(audioAnalyzer->frame_buffer, features);
-            for (int j=0; j<120; j++) {
-                printf("%f\t", features[j]);
-            }
-            printf("\n");
+            audioAnalyzer->UpdateFrameBuffer(fullBuffer.getReadPointer(0, i), audioAnalyzer->hop_size);
+            audioAnalyzer->FrameAnalysis(audioAnalyzer->frame_buffer);
         }
+        
+//        for (int i=0; i<audioAnalyzer->frame_num; i++) {
+//            printf("%f\n", audioAnalyzer->subband_signals[68-audioAnalyzer->min_note][i]);
+//        }
     }
 }
 

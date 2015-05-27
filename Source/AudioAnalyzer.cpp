@@ -47,9 +47,11 @@ AudioAnalyzer::AudioAnalyzer(float fs, uint32_t block_size)
         hammingWin[i] = (float) (0.54 - 0.46 * cos(hammingCoeff * i));
     }
     
-    feature_size = NUM_NOTES;
+    feature_size = max_note - min_note + 1;
     
     frame_buffer = new float[frame_size];
+    subband_signals = new std::vector<float>[feature_size];
+    frame_num = 0;
 }
 
 AudioAnalyzer::~AudioAnalyzer()
@@ -58,6 +60,7 @@ AudioAnalyzer::~AudioAnalyzer()
     delete [] hammingWin;
     delete fft;
     delete [] frame_buffer;
+    delete [] subband_signals;
 }
 
 int AudioAnalyzer::UpdateFrameBuffer(const float *new_buffer, uint32_t buffer_size)
@@ -74,13 +77,24 @@ int AudioAnalyzer::UpdateFrameBuffer(const float *new_buffer, uint32_t buffer_si
     return 0;
 }
 
-int AudioAnalyzer::FrameAnalysis(const float *buffer, float *out)
+int AudioAnalyzer::FrameAnalysis(const float *buffer)
 {
     if (buffer == NULL || (buffer+frame_size-1) == NULL) {
         printf("Error: buffer corrupted.");
         return -1;
     }
-    
+    float *frame_feature = new float[feature_size];
+    int ret = FrameAnalysis(buffer, frame_feature);
+    for (int i=0; i<feature_size; i++) {
+        subband_signals[i].push_back(frame_feature[i]);
+    }
+    frame_num++;
+    delete [] frame_feature;
+    return ret;
+}
+
+int AudioAnalyzer::FrameAnalysis(const float *buffer, float *out)
+{
     float* X = new float[fft_point];
     for (int i=0; i<frame_size; i++)
     {
@@ -100,21 +114,31 @@ int AudioAnalyzer::FrameAnalysis(const float *buffer, float *out)
     
     // chroma - sum of energy in a note
     for (int i=min_bin; i<=max_bin; i++) {
-        temp[FFT_bin_2_MIDI_note_mapping[i]] += (float) (sqrt(X[i] * X[i] + X[fft_point-i] * X[fft_point-i]));
+        temp[FFT_bin_2_MIDI_note_mapping[i]-min_note] += (float) (sqrt(X[i] * X[i] + X[fft_point-i] * X[fft_point-i]));
     }
     
     // take into account width
     for (int i=min_note; i<=max_note; i++) {
-        temp[i] /= MIDI_note_width[i];
+        temp[i-min_note] /= MIDI_note_width[i];
     }
     
     // only keep those local maximum
-    for (int i=min_note; i<=max_note; i++) {
+    for (int i=0; i<feature_size; i++) {
         if (temp[i] > temp[i-1] && temp[i] >= temp[i+1]) {
             out[i] = temp[i];
         }
     }
     
     delete [] temp;
+    delete [] X;
+    return 0;
+}
+
+int AudioAnalyzer::Clear()
+{
+    for (int i=0; i<feature_size; i++) {
+        subband_signals[i].clear();
+    }
+    frame_num = 0;
     return 0;
 }

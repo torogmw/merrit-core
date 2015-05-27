@@ -14,6 +14,7 @@
 #include <iostream>
 #include <math.h>
 #include "rsrfft.h"
+#include <vector>
 
 #define FS_MIR              11025.0
 #define FRAME_TIME          100.0 // in ms
@@ -34,7 +35,9 @@ public:
     AudioAnalyzer(float fs, uint32_t block_size);
     ~AudioAnalyzer();
     int UpdateFrameBuffer(const float *new_buffer, uint32_t buffer_size);
+    int FrameAnalysis(const float *buffer);
     int FrameAnalysis(const float *buffer, float *out);
+    int Clear();
     uint32_t frame_size;
     uint32_t hop_size;
     uint32_t fft_point;
@@ -49,6 +52,8 @@ public:
     SplitRadixFFT *fft;
     uint32_t feature_size;
     float *frame_buffer;
+    std::vector<float> *subband_signals;
+    uint32_t frame_num;
 };
 
 #endif /* defined(__merrit_core__AudioAnalyzer__) */
