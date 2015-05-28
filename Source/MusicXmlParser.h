@@ -16,11 +16,10 @@
 
 struct NoteUnit {
     std::string pitch;  // G3, B4 etc, or we can use a midi note?
-    int noteType;
-    int onsetTimeMs; //the start of the note, should we use time frame?
+    int duration;
+    float onsetTime; //the start of the note, should be measure+beat index
     float dynamics;
     float voice; // not sure what this is
-    int measureIndex; // count what is the measure in this
 };
 
 
@@ -32,10 +31,12 @@ public:
     int countNotes() const;
     void parseScoreTimewise();
     void parseScorePartwise();
-
+    float generateNoteUnit(XmlElement* noteElement, float measureIndex);
 private:
     ScopedPointer<XmlElement> mainScoreElement;
     int noteCount;
+    int globalTempo;
+    int globalMeasureLength;
     std::vector<NoteUnit> notes;
 };
 
