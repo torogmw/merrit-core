@@ -8,8 +8,9 @@
 
 #include "AudioAnalyzer.h"
 
-AudioAnalyzer::AudioAnalyzer(float fs, uint32_t block_size)
+AudioAnalyzer::AudioAnalyzer(float fs_, uint32_t block_size)
 {
+    fs = fs_;
     frame_size = (uint32_t)(FRAME_TIME / 1000.0 * fs);
     hop_size = block_size;
     if (frame_size < hop_size) {
@@ -194,28 +195,28 @@ int AudioAnalyzer::SubbandAnalysis(std::vector<float> &subband_signal, uint32_t 
     
     // find local peaks in flux
     if (flux[0] > 0) {
-        struct AudioNote audio_note = {0, midi_note, subband_signal[0]};
-        audio_notes.push_back(audio_note);
+        struct Note audio_note = {midi_note, subband_signal[0]};
+        audio_notes[0.f] = audio_note;
     }
     for (i=1; i<frame_num-1; i++) {
         if (flux[i-1] < flux[i] && flux[i] > flux[i+1]) {
-            struct AudioNote audio_note = {i, midi_note, subband_signal[i]};
-            audio_notes.push_back(audio_note);
+            struct Note audio_note = {midi_note, subband_signal[i]};
+            audio_notes[i*hop_size / fs] = audio_note;
         }
     }
     if (flux[frame_num-2] < flux[frame_num-1]) {
-        struct AudioNote audio_note = {frame_num-1, midi_note, subband_signal[frame_num-1]};
-        audio_notes.push_back(audio_note);
+        struct Note audio_note = {midi_note, subband_signal[frame_num-1]};
+        audio_notes[(frame_num-1)*hop_size /fs] = audio_note;
     }
     
     delete [] flux;
     return 0;
 }
 
-int AudioAnalyzer::SetScore(struct ScoreNote *score, uint32_t note_num)
+int AudioAnalyzer::SetScore(struct Note *score, float *times, uint32_t note_num)
 {
     for (int i = 0; i < note_num; ++i) {
-        score_notes.push_back(score[i]);
+        score_notes[times[i]] = score[i];
     }
     return 0;
 }
@@ -227,5 +228,34 @@ int AudioAnalyzer::Clear()
     }
     frame_num = 0;
     score_notes.clear();
+    return 0;
+}
+
+int AudioAnalyzer::AudioScoreAlignment()
+{
+    float **S = new float*[audio_notes.size()+1];
+    uint32_t **P = new uint32_t*[audio_notes.size()+1];
+    int i, j;
+    for (i=0; i<audio_notes.size(); i++) {
+        S[i] = new float[score_notes.size()+1];
+        P[i] = new uint32_t[score_notes.size()+1];
+        memset(S[i], 0, (score_notes.size()+1)*sizeof(float));
+        memset(S[i], 0, (score_notes.size()+1)*sizeof(float));
+    }
+    
+    float value = 0.f;
+    for (i=1; i<audio_notes.size()+1; i++) {
+        for (j=1; j<score_notes.size()+1; j++) {
+            value = 0.f;
+            
+        }
+    }
+    
+    for (i=0; i<audio_notes.size(); i++) {
+        delete [] S[i];
+        delete [] P[i];
+    }
+    delete [] S;
+    delete [] P;
     return 0;
 }

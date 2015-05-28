@@ -15,6 +15,7 @@
 #include <math.h>
 #include "rsrfft.h"
 #include <vector>
+#include <map>
 
 #define FS_MIR              11025.0
 #define FRAME_TIME          100.0 // in ms
@@ -29,18 +30,13 @@
 #define LOG_2ROOT12         0.057762265 // log(_2ROOT12)
 #define SPECTRAL_FLUX_SIZE  5
 
-struct AudioNote
+struct Note
 {
-    uint32_t frame_index;
     uint32_t midi_pitch;
     float valence;
 };
 
-struct ScoreNote
-{
-    float relative_time;
-    uint32_t midi_pitch;
-};
+typedef std::map<float, struct Note> TimedNotes;
 
 class AudioAnalyzer
 {
@@ -51,9 +47,10 @@ public:
     int FrameAnalysis(const float *buffer);
     int FrameAnalysis(const float *buffer, float *out);
     int SubbandAnalysis(std::vector<float> &subband_signal, uint32_t midi_note); // find notes
-    int SetScore(struct ScoreNote *score, uint32_t note_num);
+    int SetScore(struct Note *score, float *times, uint32_t note_num);
     int AudioScoreAlignment();
     int Clear();
+    float fs;
     uint32_t frame_size;
     uint32_t hop_size;
     uint32_t fft_point;
@@ -70,8 +67,8 @@ public:
     float *frame_buffer;
     std::vector<float> *subband_signals;
     uint32_t frame_num;
-    std::vector<AudioNote> audio_notes;
-    std::vector<ScoreNote> score_notes;
+    TimedNotes audio_notes;
+    TimedNotes score_notes;
 };
 
 #endif /* defined(__merrit_core__AudioAnalyzer__) */
