@@ -297,7 +297,7 @@ int AudioAnalyzer::AudioScoreAlignment(std::vector<std::pair<TimedNotes::iterato
     std::vector<uint32_t>::iterator backtracked_it;
     std::vector<uint32_t>::iterator backtracked_jt;
     for (backtracked_it=backtracked_is.begin(),backtracked_it=backtracked_is.begin(); backtracked_it!=backtracked_is.end(); backtracked_it++,backtracked_jt++) {
-        printf("%u,%u\n", backtracked_it, backtracked_jt);
+        printf("%u,%u\n", *backtracked_it, *backtracked_jt);
     }
     
     for (i=0; i<audio_notes.size(); i++) {
