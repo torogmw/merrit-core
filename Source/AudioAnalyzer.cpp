@@ -128,10 +128,16 @@ int AudioAnalyzer::FrameAnalysis(const float *buffer, float *out)
     }
     
     // only keep those local maximum
-    for (int i=0; i<feature_size; i++) {
+    if (temp[0] > temp[1]) {
+        out[0] = temp[0];
+    }
+    for (int i=1; i<feature_size-1; i++) {
         if (temp[i] > temp[i-1] && temp[i] >= temp[i+1]) {
             out[i] = temp[i];
         }
+    }
+    if (temp[feature_size-1] > temp[feature_size-2]) {
+        out[feature_size-1] = temp[feature_size-1];
     }
     
     delete [] temp;
@@ -213,6 +219,11 @@ int AudioAnalyzer::SubbandAnalysis(std::vector<float> &subband_signal, uint32_t 
         audio_notes[(frame_num-1)*hop_size /fs].push_back(audio_note);
     }
     
+//    for (i=0; i<frame_num; i++) {
+//        printf("%f,", flux[i]);
+//    }
+//    printf("\n");
+    
     delete [] flux;
     return 0;
 }
@@ -275,6 +286,13 @@ int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::itera
         }
     }
     
+//    for (i=0; i<audio_notes.size()+1; i++) {
+//        for (j=0; j<score_notes.size()+1; j++) {
+//            printf("%u,", P[i][j]);
+//        }
+//        printf("\n");
+//    }
+    
     uint32_t curr_i = audio_notes.size();
     uint32_t curr_j = score_notes.size();
     std::vector<uint32_t> backtracked_is;
@@ -297,7 +315,7 @@ int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::itera
     std::vector<uint32_t>::iterator backtracked_it;
     std::vector<uint32_t>::iterator backtracked_jt;
     for (backtracked_it=backtracked_is.begin(),backtracked_it=backtracked_is.begin(); backtracked_it!=backtracked_is.end(); backtracked_it++,backtracked_jt++) {
-        printf("%u,%u\n", *backtracked_it, *backtracked_jt);
+//        printf("%u,%u\n", *backtracked_it, *backtracked_jt);
     }
     
     for (i=0; i<audio_notes.size(); i++) {

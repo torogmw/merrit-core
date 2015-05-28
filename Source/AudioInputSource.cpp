@@ -63,13 +63,13 @@ void AudioInputSource::setFile(File audioFile)
             audioAnalyzer->SubbandAnalysis(audioAnalyzer->subband_signals[i], i+audioAnalyzer->min_note);
         }
         
-        for (TimedNotes::iterator it = audioAnalyzer->audio_notes.begin(); it != audioAnalyzer->audio_notes.end(); it++) {
-            printf("%f:", it->first);
-            for (std::vector<struct Note>::iterator kt=it->second.begin(); kt!=it->second.end(); kt++) {
-                printf("%u,", kt->midi_pitch);
-            }
-            printf("\n");
-        }
+//        for (TimedNotes::iterator it = audioAnalyzer->audio_notes.begin(); it != audioAnalyzer->audio_notes.end(); it++) {
+//            printf("%f:", it->first);
+//            for (std::vector<struct Note>::iterator kt=it->second.begin(); kt!=it->second.end(); kt++) {
+//                printf("%u,", kt->midi_pitch);
+//            }
+//            printf("\n");
+//        }
         
         
         audioAnalyzer->AudioScoreAlignment();
