@@ -235,23 +235,23 @@ int AudioAnalyzer::Clear()
     return 0;
 }
 
-int AudioAnalyzer::AudioScoreAlignment(std::vector<std::pair<TimedNotes::iterator, TimedNotes::iterator>> &alignment)
+int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::iterator, TimedNotes::iterator>> &alignment*/)
 {
     float **S = new float*[audio_notes.size()+1];
     uint32_t **P = new uint32_t*[audio_notes.size()+1];
     int i, j;
-    for (i=0; i<audio_notes.size(); i++) {
+    for (i=0; i<audio_notes.size()+1; i++) {
         S[i] = new float[score_notes.size()+1];
         P[i] = new uint32_t[score_notes.size()+1];
         memset(S[i], 0, (score_notes.size()+1)*sizeof(float));
-        memset(S[i], 0, (score_notes.size()+1)*sizeof(float));
+        memset(P[i], 0, (score_notes.size()+1)*sizeof(float));
     }
     
     float value = 0.f;
     TimedNotes::iterator it, jt;
     NotesAtTime::iterator itt, jtt;
     for (i=1, it=audio_notes.begin(); it!=audio_notes.end(); it++, i++) {
-        for (j=1, it=score_notes.begin(); jt!=score_notes.end(); jt++, j++) {
+        for (j=1, jt=score_notes.begin(); jt!=score_notes.end(); jt++, j++) {
             value = 0.f;
             for (itt=it->second.begin(); itt!=it->second.end(); itt++) {
                 for (jtt=jt->second.begin(); jtt!=jt->second.end(); jtt++) {

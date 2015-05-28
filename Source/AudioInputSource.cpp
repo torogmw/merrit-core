@@ -40,11 +40,20 @@ void AudioInputSource::setFile(File audioFile)
         tempReader->read(&fullBuffer, 0, tempReader->lengthInSamples, 0, true, false);
         numSamplesReadFromFile = tempReader->lengthInSamples;
         
-//        for (int i=0; i<numSamplesReadFromFile; i++) {
-//            printf("%f\n", fullBuffer.getReadPointer(0, i));
-//        }
-        
         audioAnalyzer->Clear();
+        
+        // [(1.0/6.0, 71), (2.0/6.0, 56), (3.0/6.0, 59), (4.0/6.0, 64), (5.0/6.0, 59), (6.0/6.0, 56)]
+
+        struct Note score[6];
+        score[0].midi_pitch = 71;
+        score[1].midi_pitch = 56;
+        score[2].midi_pitch = 59;
+        score[3].midi_pitch = 64;
+        score[4].midi_pitch = 59;
+        score[5].midi_pitch = 56;
+        float times[6] = {1.0/6.0, 2.0/6.0, 3.0/6.0, 4.0/6.0, 5.0/6.0, 6.0/6.0};
+        audioAnalyzer->SetScore(score, times, 6);
+        
         for (int i=0; (i+audioAnalyzer->frame_size) < numSamplesReadFromFile; i+=audioAnalyzer->hop_size) {
             audioAnalyzer->UpdateFrameBuffer(fullBuffer.getReadPointer(0, i), audioAnalyzer->hop_size);
             audioAnalyzer->FrameAnalysis(audioAnalyzer->frame_buffer);
@@ -63,6 +72,7 @@ void AudioInputSource::setFile(File audioFile)
         }
         
         
+        audioAnalyzer->AudioScoreAlignment();
     }
 }
 
