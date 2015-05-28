@@ -8,6 +8,10 @@
 
 #include "AudioAnalyzer.h"
 
+#define BACKTRACK_I 0
+#define BACKTRACK_J 1
+#define BACKTRACK_X 2
+
 AudioAnalyzer::AudioAnalyzer(float fs_, uint32_t block_size)
 {
     fs = fs_;
@@ -196,17 +200,17 @@ int AudioAnalyzer::SubbandAnalysis(std::vector<float> &subband_signal, uint32_t 
     // find local peaks in flux
     if (flux[0] > 0) {
         struct Note audio_note = {midi_note, subband_signal[0]};
-        audio_notes[0.f] = audio_note;
+        audio_notes[0.f].push_back(audio_note);
     }
     for (i=1; i<frame_num-1; i++) {
         if (flux[i-1] < flux[i] && flux[i] > flux[i+1]) {
             struct Note audio_note = {midi_note, subband_signal[i]};
-            audio_notes[i*hop_size / fs] = audio_note;
+            audio_notes[i*hop_size / fs].push_back(audio_note);
         }
     }
     if (flux[frame_num-2] < flux[frame_num-1]) {
         struct Note audio_note = {midi_note, subband_signal[frame_num-1]};
-        audio_notes[(frame_num-1)*hop_size /fs] = audio_note;
+        audio_notes[(frame_num-1)*hop_size /fs].push_back(audio_note);
     }
     
     delete [] flux;
@@ -216,7 +220,7 @@ int AudioAnalyzer::SubbandAnalysis(std::vector<float> &subband_signal, uint32_t 
 int AudioAnalyzer::SetScore(struct Note *score, float *times, uint32_t note_num)
 {
     for (int i = 0; i < note_num; ++i) {
-        score_notes[times[i]] = score[i];
+        score_notes[times[i]].push_back(score[i]);
     }
     return 0;
 }
@@ -231,7 +235,7 @@ int AudioAnalyzer::Clear()
     return 0;
 }
 
-int AudioAnalyzer::AudioScoreAlignment()
+int AudioAnalyzer::AudioScoreAlignment(std::vector<std::pair<TimedNotes::iterator, TimedNotes::iterator>> &alignment)
 {
     float **S = new float*[audio_notes.size()+1];
     uint32_t **P = new uint32_t*[audio_notes.size()+1];
@@ -244,11 +248,56 @@ int AudioAnalyzer::AudioScoreAlignment()
     }
     
     float value = 0.f;
-    for (i=1; i<audio_notes.size()+1; i++) {
-        for (j=1; j<score_notes.size()+1; j++) {
+    TimedNotes::iterator it, jt;
+    NotesAtTime::iterator itt, jtt;
+    for (i=1, it=audio_notes.begin(); it!=audio_notes.end(); it++, i++) {
+        for (j=1, it=score_notes.begin(); jt!=score_notes.end(); jt++, j++) {
             value = 0.f;
-            
+            for (itt=it->second.begin(); itt!=it->second.end(); itt++) {
+                for (jtt=jt->second.begin(); jtt!=jt->second.end(); jtt++) {
+                    if (itt->midi_pitch == jtt->midi_pitch) {
+                        value += itt->valence;
+                    }
+                }
+            }
+            if (value > S[i-1][j] && value > S[i][j-1]) {
+                S[i][j] = value;
+                P[i][j] = BACKTRACK_X;
+            }
+            else if (S[i-1][j] > S[i][j-1]) {
+                S[i][j] = S[i-1][j];
+                P[i][j] = BACKTRACK_I;
+            }
+            else {
+                S[i][j] = S[i][j-1];
+                P[i][j] = BACKTRACK_J;
+            }
         }
+    }
+    
+    uint32_t curr_i = audio_notes.size();
+    uint32_t curr_j = score_notes.size();
+    std::vector<uint32_t> backtracked_is;
+    std::vector<uint32_t> backtracked_js;
+    while (curr_i > 0 && curr_j > 0) {
+        if (P[curr_i][curr_j] == BACKTRACK_I) {
+            curr_i --;
+        }
+        else if (P[curr_i][curr_j] == BACKTRACK_J) {
+            curr_j --;
+        }
+        else {
+            backtracked_is.push_back(curr_i);
+            backtracked_js.push_back(curr_j);
+            curr_i --;
+            curr_j --;
+        }
+    }
+    
+    std::vector<uint32_t>::iterator backtracked_it;
+    std::vector<uint32_t>::iterator backtracked_jt;
+    for (backtracked_it=backtracked_is.begin(),backtracked_it=backtracked_is.begin(); backtracked_it!=backtracked_is.end(); backtracked_it++,backtracked_jt++) {
+        printf("%u,%u\n", backtracked_it, backtracked_jt);
     }
     
     for (i=0; i<audio_notes.size(); i++) {

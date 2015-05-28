@@ -36,7 +36,8 @@ struct Note
     float valence;
 };
 
-typedef std::map<float, struct Note> TimedNotes;
+typedef std::vector<struct Note> NotesAtTime;
+typedef std::map<float, NotesAtTime> TimedNotes;
 
 class AudioAnalyzer
 {
@@ -48,7 +49,7 @@ public:
     int FrameAnalysis(const float *buffer, float *out);
     int SubbandAnalysis(std::vector<float> &subband_signal, uint32_t midi_note); // find notes
     int SetScore(struct Note *score, float *times, uint32_t note_num);
-    int AudioScoreAlignment();
+    int AudioScoreAlignment(std::vector<std::pair<TimedNotes::iterator, TimedNotes::iterator>> &alignment);
     int Clear();
     float fs;
     uint32_t frame_size;

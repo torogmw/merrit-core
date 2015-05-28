@@ -55,8 +55,14 @@ void AudioInputSource::setFile(File audioFile)
         }
         
         for (TimedNotes::iterator it = audioAnalyzer->audio_notes.begin(); it != audioAnalyzer->audio_notes.end(); it++) {
-            printf("%f\n", it->first);
+            printf("%f:", it->first);
+            for (std::vector<struct Note>::iterator kt=it->second.begin(); kt!=it->second.end(); kt++) {
+                printf("%u,", kt->midi_pitch);
+            }
+            printf("\n");
         }
+        
+        
     }
 }
 
