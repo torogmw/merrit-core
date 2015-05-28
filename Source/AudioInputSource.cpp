@@ -66,11 +66,12 @@ void AudioInputSource::setFile(File audioFile)
 //        for (TimedNotes::iterator it = audioAnalyzer->audio_notes.begin(); it != audioAnalyzer->audio_notes.end(); it++) {
 //            printf("%f:", it->first);
 //            for (std::vector<struct Note>::iterator kt=it->second.begin(); kt!=it->second.end(); kt++) {
-//                printf("%u,", kt->midi_pitch);
+//                printf("%u,%f ", kt->midi_pitch, kt->valence);
 //            }
 //            printf("\n");
 //        }
-        
+//        
+//        printf("min_note:%u\n", audioAnalyzer->min_note);
         
         audioAnalyzer->AudioScoreAlignment();
     }

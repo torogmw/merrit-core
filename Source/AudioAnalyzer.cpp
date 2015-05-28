@@ -271,6 +271,7 @@ int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::itera
                     }
                 }
             }
+            value += S[i-1][j-1];
             if (value > S[i-1][j] && value > S[i][j-1]) {
                 S[i][j] = value;
                 P[i][j] = BACKTRACK_X;
@@ -288,7 +289,7 @@ int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::itera
     
 //    for (i=0; i<audio_notes.size()+1; i++) {
 //        for (j=0; j<score_notes.size()+1; j++) {
-//            printf("%u,", P[i][j]);
+//            printf("%f,", S[i][j]);
 //        }
 //        printf("\n");
 //    }
@@ -305,8 +306,8 @@ int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::itera
             curr_j --;
         }
         else {
-            backtracked_is.push_back(curr_i);
-            backtracked_js.push_back(curr_j);
+            backtracked_is.push_back(curr_i-1);
+            backtracked_js.push_back(curr_j-1);
             curr_i --;
             curr_j --;
         }
@@ -314,8 +315,8 @@ int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::itera
     
     std::vector<uint32_t>::iterator backtracked_it;
     std::vector<uint32_t>::iterator backtracked_jt;
-    for (backtracked_it=backtracked_is.begin(),backtracked_it=backtracked_is.begin(); backtracked_it!=backtracked_is.end(); backtracked_it++,backtracked_jt++) {
-//        printf("%u,%u\n", *backtracked_it, *backtracked_jt);
+    for (backtracked_it=backtracked_is.begin(),backtracked_jt=backtracked_js.begin(); backtracked_it!=backtracked_is.end(); backtracked_it++,backtracked_jt++) {
+        printf("%u,%u\n", *backtracked_it, *backtracked_jt);
     }
     
     for (i=0; i<audio_notes.size(); i++) {
