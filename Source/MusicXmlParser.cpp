@@ -96,3 +96,9 @@ float MusicXmlParser::generateNoteUnit(XmlElement* noteElement, float measureInd
         return measureIndex;
     }
 }
+
+std::vector<NoteUnit> MusicXmlParser::getNotes()
+{
+    return notes;
+}
+

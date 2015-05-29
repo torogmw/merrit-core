@@ -167,6 +167,10 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
         if(chooser.getResult().exists())
         {
             notation = new MusicXmlParser(chooser.getResult());
+            std::vector<NoteUnit> notes = notation->getNotes();
+            for (std::vector<NoteUnit>::iterator it = notes.begin(); it != notes.end(); it++) {
+                printf("%s\n", it->pitch.c_str());
+            }
         }
         //[/UserButtonCode_xmlButton]
     }

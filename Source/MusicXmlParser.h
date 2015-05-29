@@ -32,6 +32,7 @@ public:
     void parseScoreTimewise();
     void parseScorePartwise();
     float generateNoteUnit(XmlElement* noteElement, float measureIndex);
+    std::vector<NoteUnit> getNotes();
 private:
     ScopedPointer<XmlElement> mainScoreElement;
     int noteCount;

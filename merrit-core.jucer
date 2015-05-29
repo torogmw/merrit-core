@@ -19,6 +19,10 @@
       <FILE id="bXxGq5" name="AudioAnalyzer.h" compile="0" resource="0" file="Source/AudioAnalyzer.h"/>
       <FILE id="ZHVxpP" name="ChromaFeat.cpp" compile="1" resource="0" file="Source/ChromaFeat.cpp"/>
       <FILE id="hLBcmP" name="ChromaFeat.h" compile="0" resource="0" file="Source/ChromaFeat.h"/>
+      <FILE id="ctuX15" name="MusicXmlParser.cpp" compile="1" resource="0"
+            file="Source/MusicXmlParser.cpp"/>
+      <FILE id="kSKFAi" name="MusicXmlParser.h" compile="0" resource="0"
+            file="Source/MusicXmlParser.h"/>
       <FILE id="j8jm5v" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="r51jqj" name="PlaybackUI.cpp" compile="1" resource="0" file="Source/PlaybackUI.cpp"/>
       <FILE id="GhX7GH" name="PlaybackUI.h" compile="0" resource="0" file="Source/PlaybackUI.h"/>
