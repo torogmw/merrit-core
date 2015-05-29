@@ -162,6 +162,12 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == xmlButton)
     {
         //[UserButtonCode_xmlButton] -- add your button handler code here..
+        FileChooser chooser (("Choose audio file to open"),File::getSpecialLocation(File::userDocumentsDirectory),"*",true);
+        chooser.browseForFileToOpen();
+        if(chooser.getResult().exists())
+        {
+            notation = new MusicXmlParser(chooser.getResult());
+        }
         //[/UserButtonCode_xmlButton]
     }
 
