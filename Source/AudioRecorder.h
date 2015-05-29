@@ -11,6 +11,8 @@
 
 #include <stdio.h>
 #include "JuceHeader.h"
+#include "AudioAnalyzer.h"
+
 class AudioRecorder : public AudioIODeviceCallback
 {
 public:
@@ -33,5 +35,6 @@ private:
     
     CriticalSection writerLock;
     AudioFormatWriter::ThreadedWriter* volatile activeWriter;
+    AudioAnalyzer *audioAnalyzer;
 };
 #endif /* defined(__merrit_core__AudioRecorder__) */

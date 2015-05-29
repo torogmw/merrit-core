@@ -32,7 +32,7 @@ void AudioInputSource::setFile(File audioFile)
     {
         AudioFormatReader* tempReader = formatManager.createReaderFor(audioFile);
         fileSource = new AudioFormatReaderSource(tempReader,true);
-        transportSource.setSource(fileSource,32768,&playingThread,FS);
+        transportSource.setSource(fileSource,32768,&playingThread,FS_MIR);
 //        deviceManager.addAudioCallback(this); // will call audioDeviceIOCallback
         
         // for file input, get the whole buffer and run MIR here

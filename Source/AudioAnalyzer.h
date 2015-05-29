@@ -17,7 +17,7 @@
 #include <vector>
 #include <map>
 
-#define FS_MIR              11025.0
+#define FS_MIR              44100.0
 #define FRAME_TIME          100.0 // in ms
 #define MIN_FFT_POINT       1024
 #define MIN_FFT_ORDER       10

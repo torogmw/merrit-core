@@ -15,8 +15,6 @@
 #include "JuceHeader.h"
 #include "AudioAnalyzer.h"
 
-#define FS 11025
-
 class AudioInputSource : public AudioIODeviceCallback
 {
 public:
@@ -42,7 +40,7 @@ private:
     TimeSliceThread playingThread;
     AudioAnalyzer *audioAnalyzer;
     int numSamplesReadFromFile;
-    AudioSampleBuffer fullBuffer = AudioSampleBuffer(1, FS * 60); // start with an empty buffer and fill with audio data, 661500 = 11025 * 60
+    AudioSampleBuffer fullBuffer = AudioSampleBuffer(1, FS_MIR * 60); // start with an empty buffer and fill with audio data, 661500 = 11025 * 60
 };
 
 #endif /* defined(__merrit_core__AudioInputSource__) */

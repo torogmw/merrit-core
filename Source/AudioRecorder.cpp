@@ -11,6 +11,7 @@
 AudioRecorder::AudioRecorder():backgroundThread ("Audio Recorder Thread"),
 sampleRate (0), nextSampleNum (0), activeWriter (nullptr)
 {
+    audioAnalyzer = new AudioAnalyzer(FS_MIR, 512);
     backgroundThread.startThread();
 }
 
@@ -76,11 +77,37 @@ bool AudioRecorder::isRecording() const
 void AudioRecorder::audioDeviceAboutToStart(AudioIODevice* device)
 {
     sampleRate = device->getCurrentSampleRate();
+    if (sampleRate != FS_MIR) {
+        printf("sample rate has problem!\n");
+    }
+    audioAnalyzer->Clear();
 }
 
 void AudioRecorder::audioDeviceStopped()
 {
-    sampleRate = 0;
+    // hard code score
+    struct Note score[6];
+    score[0].midi_pitch = 71;
+    score[1].midi_pitch = 56;
+    score[2].midi_pitch = 59;
+    score[3].midi_pitch = 64;
+    score[4].midi_pitch = 59;
+    score[5].midi_pitch = 56;
+    float times[6] = {1.0/6.0, 2.0/6.0, 3.0/6.0, 4.0/6.0, 5.0/6.0, 6.0/6.0};
+    audioAnalyzer->SetScore(score, times, 6);
+    
+    for (int i=0; i<audioAnalyzer->feature_size; i++) {
+        audioAnalyzer->SubbandAnalysis(audioAnalyzer->subband_signals[i], i+audioAnalyzer->min_note);
+    }
+//    for (TimedNotes::iterator it = audioAnalyzer->audio_notes.begin(); it != audioAnalyzer->audio_notes.end(); it++) {
+//        printf("%f:", it->first);
+//        for (std::vector<struct Note>::iterator kt=it->second.begin(); kt!=it->second.end(); kt++) {
+//            printf("%u,%f ", kt->midi_pitch, kt->valence);
+//        }
+//        printf("\n");
+//    }
+    audioAnalyzer->AudioScoreAlignment();
+    
 }
 
 void AudioRecorder::audioDeviceIOCallback (const float** inputChannelData, int /*numInputChannels*/,
@@ -96,6 +123,13 @@ void AudioRecorder::audioDeviceIOCallback (const float** inputChannelData, int /
         // Create an AudioSampleBuffer to wrap our incomming data, note that this does no allocations or copies, it simply references our input data
         const AudioSampleBuffer buffer (const_cast<float**> (inputChannelData), 1, numSamples);
         nextSampleNum += numSamples;
+        
+        if (numSamples != audioAnalyzer->hop_size) {
+            printf("record block size has problem!\n");
+        }
+        
+        audioAnalyzer->UpdateFrameBuffer(inputChannelData[0], numSamples);
+        audioAnalyzer->FrameAnalysis(audioAnalyzer->frame_buffer);
     }
 
     // We need to clear the output buffers, in case they're full of junk..

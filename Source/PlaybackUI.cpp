@@ -53,7 +53,7 @@ PlaybackUI::PlaybackUI ()
     title->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (recordButton = new TextButton ("record button"));
-    recordButton->setButtonText (TRANS("record"));
+    recordButton->setButtonText (TRANS("Record"));
     recordButton->addListener (this);
 
     addAndMakeVisible (xmlButton = new TextButton ("xml button"));
@@ -77,6 +77,7 @@ PlaybackUI::PlaybackUI ()
                              String::empty, /* preferred device name */
                              &audioDeviceSetup /* preferred setup options */);
     inputSource = new AudioInputSource(deviceManager);
+    recorder = new AudioRecorder();
     //[/Constructor]
 }
 
@@ -94,7 +95,6 @@ PlaybackUI::~PlaybackUI()
 
 
     //[Destructor]. You can add your own custom destruction code here..
-    delete inputSource;
     //[/Destructor]
 }
 
@@ -153,10 +153,10 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == recordButton)
     {
         //[UserButtonCode_recordButton] -- add your button handler code here..
-        if (recorder)
-            stopRecording();
-        else
+        if (recordButton->getButtonText().compare("Record") == 0)
             startRecording();
+        else if (recordButton->getButtonText().compare("Stop") == 0)
+            stopRecording();
         //[/UserButtonCode_recordButton]
     }
     else if (buttonThatWasClicked == xmlButton)
@@ -185,7 +185,6 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
 
 void PlaybackUI::startRecording()
 {
-    recorder = new AudioRecorder();
     deviceManager.addAudioCallback(recorder);
     const File file (File::getSpecialLocation (File::userMusicDirectory)
                      .getNonexistentChildFile ("practice", ".wav"));
@@ -198,7 +197,6 @@ void PlaybackUI::stopRecording()
     recorder->stop();
     recordButton->setButtonText ("Record");
     deviceManager.removeAudioCallback(recorder);
-    recorder = nullptr;
 }
 
 //[/MiscUserCode]
@@ -235,7 +233,7 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Marion"
          fontsize="19.5" bold="1" italic="0" justification="36"/>
   <TEXTBUTTON name="record button" id="477e06bd4f00f984" memberName="recordButton"
-              virtualName="" explicitFocusOrder="0" pos="104 72 150 24" buttonText="record"
+              virtualName="" explicitFocusOrder="0" pos="104 72 150 24" buttonText="Record"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="xml button" id="25fd44335f65258a" memberName="xmlButton"
               virtualName="" explicitFocusOrder="0" pos="104 176 150 24" buttonText="readXML"
