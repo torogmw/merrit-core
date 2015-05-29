@@ -17,8 +17,6 @@
       <FILE id="hqhruY" name="AudioAnalyzer.cpp" compile="1" resource="0"
             file="Source/AudioAnalyzer.cpp"/>
       <FILE id="bXxGq5" name="AudioAnalyzer.h" compile="0" resource="0" file="Source/AudioAnalyzer.h"/>
-      <FILE id="ZHVxpP" name="ChromaFeat.cpp" compile="1" resource="0" file="Source/ChromaFeat.cpp"/>
-      <FILE id="hLBcmP" name="ChromaFeat.h" compile="0" resource="0" file="Source/ChromaFeat.h"/>
       <FILE id="ctuX15" name="MusicXmlParser.cpp" compile="1" resource="0"
             file="Source/MusicXmlParser.cpp"/>
       <FILE id="kSKFAi" name="MusicXmlParser.h" compile="0" resource="0"
@@ -28,22 +26,11 @@
       <FILE id="GhX7GH" name="PlaybackUI.h" compile="0" resource="0" file="Source/PlaybackUI.h"/>
       <FILE id="N0xX8G" name="rsrfft.cxx" compile="1" resource="0" file="Source/rsrfft.cxx"/>
       <FILE id="nsDB1n" name="rsrfft.h" compile="0" resource="0" file="Source/rsrfft.h"/>
-      <FILE id="JH5O9A" name="ruofeng_main.cpp" compile="1" resource="0"
-            file="Source/ruofeng_main.cpp"/>
-      <FILE id="JFu259" name="SpectralContrastFeat.cpp" compile="1" resource="0"
-            file="Source/SpectralContrastFeat.cpp"/>
-      <FILE id="yLarjQ" name="SpectralContrastFeat.h" compile="0" resource="0"
-            file="Source/SpectralContrastFeat.h"/>
-      <FILE id="zzGRIv" name="TempoFeat.cpp" compile="1" resource="0" file="Source/TempoFeat.cpp"/>
-      <FILE id="gWr37j" name="TempoFeat.h" compile="0" resource="0" file="Source/TempoFeat.h"/>
-      <FILE id="JlSvGH" name="TemporalFeat.cpp" compile="1" resource="0"
-            file="Source/TemporalFeat.cpp"/>
-      <FILE id="kDJOwE" name="TemporalFeat.h" compile="0" resource="0" file="Source/TemporalFeat.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="" externalLibraries=""
-               extraFrameworks="aubio">
+               extraFrameworks="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
                        isDebug="1" optimisation="1" targetName="merrit-core"/>
