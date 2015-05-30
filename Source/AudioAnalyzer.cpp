@@ -204,7 +204,7 @@ int AudioAnalyzer::SubbandAnalysis(std::vector<float> &subband_signal, uint32_t 
     }
     
     // find local peaks in flux
-    if (flux[0] > 0) {
+    if (flux[0] > flux[1]) {
         struct Note audio_note = {midi_note, subband_signal[0]};
         audio_notes[0.f].push_back(audio_note);
     }
@@ -248,9 +248,20 @@ int AudioAnalyzer::Clear()
 
 int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::iterator, TimedNotes::iterator>> &alignment*/)
 {
+    int i, j;
+    TimedNotes::iterator it, jt;
+    
+    std::map<int, float> audio_notes_index_to_time;
+    std::map<int, float> score_notes_index_to_time;
+    for (i=0, it=audio_notes.begin(); i<audio_notes.size(); i++, it++) {
+        audio_notes_index_to_time[i] = it->first;
+    }
+    for (j=0, jt=score_notes.begin(); j<score_notes.size(); j++, jt++) {
+        score_notes_index_to_time[j] = jt->first;
+    }
+    
     float **S = new float*[audio_notes.size()+1];
     uint32_t **P = new uint32_t*[audio_notes.size()+1];
-    int i, j;
     for (i=0; i<audio_notes.size()+1; i++) {
         S[i] = new float[score_notes.size()+1];
         P[i] = new uint32_t[score_notes.size()+1];
@@ -259,7 +270,7 @@ int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::itera
     }
     
     float value = 0.f;
-    TimedNotes::iterator it, jt;
+    
     NotesAtTime::iterator itt, jtt;
     for (i=1, it=audio_notes.begin(); it!=audio_notes.end(); it++, i++) {
         for (j=1, jt=score_notes.begin(); jt!=score_notes.end(); jt++, j++) {
@@ -296,8 +307,8 @@ int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::itera
     
     uint32_t curr_i = audio_notes.size();
     uint32_t curr_j = score_notes.size();
-    std::vector<uint32_t> backtracked_is;
-    std::vector<uint32_t> backtracked_js;
+    std::vector<float> backtracked_is;
+    std::vector<float> backtracked_js;
     while (curr_i > 0 && curr_j > 0) {
         if (P[curr_i][curr_j] == BACKTRACK_I) {
             curr_i --;
@@ -306,17 +317,17 @@ int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::itera
             curr_j --;
         }
         else {
-            backtracked_is.push_back(curr_i-1);
-            backtracked_js.push_back(curr_j-1);
+            backtracked_is.push_back(audio_notes_index_to_time[curr_i-1]);
+            backtracked_js.push_back(score_notes_index_to_time[curr_j-1]);
             curr_i --;
             curr_j --;
         }
     }
     
-    std::vector<uint32_t>::iterator backtracked_it;
-    std::vector<uint32_t>::iterator backtracked_jt;
+    std::vector<float>::iterator backtracked_it;
+    std::vector<float>::iterator backtracked_jt;
     for (backtracked_it=backtracked_is.begin(),backtracked_jt=backtracked_js.begin(); backtracked_it!=backtracked_is.end(); backtracked_it++,backtracked_jt++) {
-        printf("%u,%u\n", *backtracked_it, *backtracked_jt);
+        printf("%f,%f\n", *backtracked_it, *backtracked_jt);
     }
     
     for (i=0; i<audio_notes.size(); i++) {
