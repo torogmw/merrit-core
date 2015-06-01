@@ -22,6 +22,21 @@ MusicXmlParser :: MusicXmlParser(const File &xmlFile)
     } else {
         std::cout<< "parse error" <<std::endl;
     }
+    
+    // add midi note hashmap
+    midiBase["C"] = 0;
+    midiBase["C#"] = 1;
+    midiBase["D"] = 2;
+    midiBase["D#"] = 3;
+    midiBase["E"] = 4;
+    midiBase["F"] = 5;
+    midiBase["F#"] = 6;
+    midiBase["G"] = 7;
+    midiBase["G#"] = 8;
+    midiBase["A"] = 9;
+    midiBase["A#"] = 10;
+    midiBase["B"] = 11;
+    
 }
 
 MusicXmlParser :: ~MusicXmlParser()
@@ -59,6 +74,11 @@ void MusicXmlParser::parseScorePartwise()
                 std::cout<<"note!"<<std::endl;
                 noteElement = measureElement->getChildElement(j);
                 measureIndex = generateNoteUnit(noteElement, measureIndex); // update the measure index
+            } else if (measureElement->getChildElement(j)->getTagName() == "backup") {
+                noteElement = measureElement->getChildElement(j);
+                String backDuration = noteElement->getChildByName("duration")->getAllSubText();
+                measureIndex -= std::stof(backDuration.toStdString()) / globalMeasureLength;
+                std::cout<<"backup!"<<std::endl;
             } else {
                 std::cout<<"fuck!"<<std::endl;
             }
@@ -84,7 +104,7 @@ float MusicXmlParser::generateNoteUnit(XmlElement* noteElement, float measureInd
         String duration = noteElement->getChildByName("duration")->getAllSubText();
         String voice = noteElement->getChildByName("voice")->getAllSubText();
         String type = noteElement->getChildByName("type")->getAllSubText();
-        noteUnit.pitch = (step+octave).toStdString();
+        noteUnit.pitch = pitchToMidi(step, std::stoi(octave.toStdString()));
         noteUnit.duration = std::stoi(duration.toStdString());
         noteUnit.onsetTime = measureIndex;
         noteUnit.voice = std::stoi(voice.toStdString());
@@ -102,3 +122,11 @@ std::vector<NoteUnit> MusicXmlParser::getNotes()
     return notes;
 }
 
+int MusicXmlParser::pitchToMidi(String pitch, int octave)
+{
+    int isSharp = 0;
+    
+    //todo: add sharp
+    return (octave + 1) * 12 + midiBase[pitch] + isSharp;
+    
+}
