@@ -70,8 +70,6 @@ void AudioInputSource::setFile(File audioFile)
 //            }
 //            printf("\n");
 //        }
-//        
-//        printf("min_note:%u\n", audioAnalyzer->min_note);
         
         audioAnalyzer->AudioScoreAlignment();
     }

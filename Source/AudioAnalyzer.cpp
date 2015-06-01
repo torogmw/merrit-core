@@ -205,17 +205,17 @@ int AudioAnalyzer::SubbandAnalysis(std::vector<float> &subband_signal, uint32_t 
     
     // find local peaks in flux
     if (flux[0] > flux[1]) {
-        struct Note audio_note = {midi_note, subband_signal[0]};
+        struct Note audio_note = {midi_note, flux[0]};
         audio_notes[0.f].push_back(audio_note);
     }
     for (i=1; i<frame_num-1; i++) {
         if (flux[i-1] < flux[i] && flux[i] > flux[i+1]) {
-            struct Note audio_note = {midi_note, subband_signal[i]};
+            struct Note audio_note = {midi_note, flux[i]};
             audio_notes[i*hop_size / fs].push_back(audio_note);
         }
     }
     if (flux[frame_num-2] < flux[frame_num-1]) {
-        struct Note audio_note = {midi_note, subband_signal[frame_num-1]};
+        struct Note audio_note = {midi_note, flux[frame_num-1]};
         audio_notes[(frame_num-1)*hop_size /fs].push_back(audio_note);
     }
     
@@ -317,6 +317,7 @@ int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::itera
             curr_j --;
         }
         else {
+//            printf("%d,%d\n", curr_i-1, curr_j-1);
             backtracked_is.push_back(audio_notes_index_to_time[curr_i-1]);
             backtracked_js.push_back(score_notes_index_to_time[curr_j-1]);
             curr_i --;
@@ -329,6 +330,16 @@ int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::itera
     for (backtracked_it=backtracked_is.begin(),backtracked_jt=backtracked_js.begin(); backtracked_it!=backtracked_is.end(); backtracked_it++,backtracked_jt++) {
         printf("%f,%f\n", *backtracked_it, *backtracked_jt);
     }
+    
+    /*
+     this is correct alignment for first_bar_44100.wav
+     2.194286,1.000000
+     1.764717,0.833333
+     1.323537,0.666667
+     0.928798,0.500000
+     0.487619,0.333333
+     0.046440,0.166667
+     */
     
     for (i=0; i<audio_notes.size(); i++) {
         delete [] S[i];
