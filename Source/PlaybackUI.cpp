@@ -60,6 +60,9 @@ PlaybackUI::PlaybackUI ()
     xmlButton->setButtonText (TRANS("readXML"));
     xmlButton->addListener (this);
 
+    addAndMakeVisible (webBrowserComponent = new WebBrowserComponent());
+    webBrowserComponent->setName ("web browser component");
+
 
     //[UserPreSize]
     playStopButton->setVisible(false);        // invisible by default
@@ -78,6 +81,8 @@ PlaybackUI::PlaybackUI ()
                              &audioDeviceSetup /* preferred setup options */);
     inputSource = new AudioInputSource(deviceManager);
     recorder = new AudioRecorder();
+    String s = "file://" + File::getCurrentWorkingDirectory().getFullPathName() + "/index.html";
+    webBrowserComponent->goToURL(s);
     //[/Constructor]
 }
 
@@ -92,6 +97,7 @@ PlaybackUI::~PlaybackUI()
     title = nullptr;
     recordButton = nullptr;
     xmlButton = nullptr;
+    webBrowserComponent = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -117,10 +123,11 @@ void PlaybackUI::resized()
 
     playStopButton->setBounds (104, 240, 150, 24);
     loadButton->setBounds (104, 120, 150, 24);
-    resultLabel->setBounds (104, 336, 152, 224);
+    resultLabel->setBounds (104, 296, 152, 32);
     title->setBounds (64, 24, 224, 40);
     recordButton->setBounds (104, 72, 150, 24);
     xmlButton->setBounds (104, 176, 150, 24);
+    webBrowserComponent->setBounds (8, 352, 344, 224);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -223,7 +230,7 @@ BEGIN_JUCER_METADATA
               virtualName="" explicitFocusOrder="0" pos="104 120 150 24" buttonText="load"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <LABEL name="result label" id="f3671d4a4efe8c7b" memberName="resultLabel"
-         virtualName="" explicitFocusOrder="0" pos="104 336 152 224" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="104 296 152 32" edTextCol="ff000000"
          edBkgCol="0" labelText="result" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
          bold="0" italic="0" justification="12"/>
@@ -238,6 +245,9 @@ BEGIN_JUCER_METADATA
   <TEXTBUTTON name="xml button" id="25fd44335f65258a" memberName="xmlButton"
               virtualName="" explicitFocusOrder="0" pos="104 176 150 24" buttonText="readXML"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <GENERICCOMPONENT name="web browser component" id="6d771a11f7ef330e" memberName="webBrowserComponent"
+                    virtualName="" explicitFocusOrder="0" pos="8 352 344 224" class="WebBrowserComponent"
+                    params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

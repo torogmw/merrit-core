@@ -25,6 +25,7 @@
 #include "AudioInputSource.h"
 #include "AudioRecorder.h"
 #include "MusicXmlParser.h"
+#include <GUIDOEngine/GUIDOEngine.h>
 //[/Headers]
 
 
@@ -73,6 +74,7 @@ private:
     ScopedPointer<Label> title;
     ScopedPointer<TextButton> recordButton;
     ScopedPointer<TextButton> xmlButton;
+    ScopedPointer<WebBrowserComponent> webBrowserComponent;
 
 
     //==============================================================================

@@ -1,0 +1,66 @@
+<html>
+    <head>
+        <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script src="vexflow-min.js"></script>
+    </head>
+    <body>
+        <canvas width="700" height="100"></canvas>
+        <script>
+            var canvas = $("canvas")[0];
+            console.log(canvas);
+            var renderer = new Vex.Flow.Renderer(canvas, 
+                Vex.Flow.Renderer.Backends.CANVAS);
+
+            var ctx = renderer.getContext();
+            var stave = new Vex.Flow.Stave(10, 0, 500);
+
+            // Add a treble clef
+            stave.addClef("treble");
+            stave.setContext(ctx).draw();
+
+            var notes = [
+            new Vex.Flow.StaveNote({ keys: ["e##/5"], duration: "8d" }).
+              addAccidental(0, new Vex.Flow.Accidental("##")).addDotToAll(),
+            new Vex.Flow.StaveNote({ keys: ["b/4"], duration: "16" }).
+              addAccidental(0, new Vex.Flow.Accidental("b"))
+            ];
+
+
+
+            var notes2 = [
+            new Vex.Flow.StaveNote({ keys: ["c/4"], duration: "8" }),
+            new Vex.Flow.StaveNote({ keys: ["d/4"], duration: "16" }),
+            new Vex.Flow.StaveNote({ keys: ["e/4"], duration: "16" }).
+              addAccidental(0, new Vex.Flow.Accidental("b"))
+            ];
+
+            console.log(notes2[0]);
+
+            var notes3 = [
+            new Vex.Flow.StaveNote({ keys: ["d/4"], duration: "16" }),
+            new Vex.Flow.StaveNote({ keys: ["e/4"], duration: "16" }).
+              addAccidental(0, new Vex.Flow.Accidental("#")),
+            new Vex.Flow.StaveNote({ keys: ["g/4"], duration: "32" }),
+            new Vex.Flow.StaveNote({ keys: ["a/4"], duration: "32" }),
+            new Vex.Flow.StaveNote({ keys: ["g/4"], duration: "16" })
+            ];
+
+            var notes4 = [ new Vex.Flow.StaveNote({ keys: ["d/4"], duration: "q" }) ];
+
+            // Create the beams
+            var beam = new Vex.Flow.Beam(notes);
+            var beam2 = new Vex.Flow.Beam(notes2);
+            var beam3 = new Vex.Flow.Beam(notes3);
+
+            var all_notes = notes.concat(notes2).concat(notes3).concat(notes4);
+
+            // Helper function to justify and draw a 4/4 voice
+            Vex.Flow.Formatter.FormatAndDraw(ctx, stave, all_notes);
+
+            // Render beams
+            beam.setContext(ctx).draw();
+            beam2.setContext(ctx).draw();
+            beam3.setContext(ctx).draw();
+        </script>
+    </body>
+</html>
