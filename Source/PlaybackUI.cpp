@@ -81,7 +81,11 @@ PlaybackUI::PlaybackUI ()
                              &audioDeviceSetup /* preferred setup options */);
     inputSource = new AudioInputSource(deviceManager);
     recorder = new AudioRecorder();
-    String s = "file://" + File::getCurrentWorkingDirectory().getFullPathName() + "/index.html";
+    
+    String score = "b/4,8;g/3,8,#;b/3,8;e/4,8;b/3,8;g/3,8,#";
+    String encoded_score = URL::addEscapeChars(score, true);
+    String s = "file://" + File::getCurrentWorkingDirectory().getFullPathName() + "/../../../../Webpages/index.html?score=" + encoded_score;
+    printf("%ls\n", s.toWideCharPointer());
     webBrowserComponent->goToURL(s);
     //[/Constructor]
 }
@@ -176,7 +180,7 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
             notation = new MusicXmlParser(chooser.getResult());
             std::vector<NoteUnit> notes = notation->getNotes();
             for (std::vector<NoteUnit>::iterator it = notes.begin(); it != notes.end(); it++) {
-                printf("%s\n", it->pitch.c_str());
+                printf("%d\n", it->pitch);
             }
         }
         //[/UserButtonCode_xmlButton]

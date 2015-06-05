@@ -4,63 +4,66 @@
         <script src="vexflow-min.js"></script>
     </head>
     <body>
-        <canvas width="700" height="100"></canvas>
+        <canvas width="700" height="200"></canvas>
         <script>
-            var canvas = $("canvas")[0];
-            console.log(canvas);
-            var renderer = new Vex.Flow.Renderer(canvas, 
-                Vex.Flow.Renderer.Backends.CANVAS);
+            function getParameter(name) {
+                name = name.replace(/\[]/, "\\\[").replace(/[\]]/, "\\\]");
+                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+                var results = regex.exec(window.location.search);
+                if (results == null) return undefined;
+                else return decodeURIComponent(results[1].replace(/\+/g, " "));
+            }
 
-            var ctx = renderer.getContext();
-            var stave = new Vex.Flow.Stave(10, 0, 500);
+            $(document).ready(function() {
+                var param = getParameter("score");
+                console.log(param)
 
-            // Add a treble clef
-            stave.addClef("treble");
-            stave.setContext(ctx).draw();
+                if (!param)
+                    param = "e/5,8d,##;b/4,16,b:c/4,8;d/4,16;e/4,16,b:d/4,16;e/4,16,#;g/4,32;a/4,32;g/4,16:d/4,q";
 
-            var notes = [
-            new Vex.Flow.StaveNote({ keys: ["e##/5"], duration: "8d" }).
-              addAccidental(0, new Vex.Flow.Accidental("##")).addDotToAll(),
-            new Vex.Flow.StaveNote({ keys: ["b/4"], duration: "16" }).
-              addAccidental(0, new Vex.Flow.Accidental("b"))
-            ];
+                staves_str = param.split(":");
+                all_notes = [];
+                all_beams = [];
+                for (var i in staves_str) {
+                    notes_str = staves_str[i].split(";");
+                    notes = [];
+                    for (var j in notes_str) {
+                        fields = notes_str[j].split(",");
+                        if (fields.length == 2) {
+                            var note = new Vex.Flow.StaveNote({keys: [fields[0]], duration: fields[1]});
+                            notes.push(note);
+                        }
+                        else if (fields.length == 3) {
+                            var note = new Vex.Flow.StaveNote({keys: [fields[0]], duration: fields[1]}).addAccidental(0, new Vex.Flow.Accidental(fields[2]));
+                            notes.push(note);
+                        }
+                    }
+                    if (notes.length > 1) {
+                        var beam = new Vex.Flow.Beam(notes);
+                        all_beams.push(beam);
+                    }
+                    all_notes = all_notes.concat(notes);
+                };
 
+                var canvas = $("canvas")[0];
+                var renderer = new Vex.Flow.Renderer(canvas, 
+                    Vex.Flow.Renderer.Backends.CANVAS);
 
+                var ctx = renderer.getContext();
+                var stave = new Vex.Flow.Stave(10, 0, 500);
 
-            var notes2 = [
-            new Vex.Flow.StaveNote({ keys: ["c/4"], duration: "8" }),
-            new Vex.Flow.StaveNote({ keys: ["d/4"], duration: "16" }),
-            new Vex.Flow.StaveNote({ keys: ["e/4"], duration: "16" }).
-              addAccidental(0, new Vex.Flow.Accidental("b"))
-            ];
+                // Add a treble clef
+                stave.addClef("treble");
+                stave.setContext(ctx).draw();
 
-            console.log(notes2[0]);
+                console.log(all_notes);
 
-            var notes3 = [
-            new Vex.Flow.StaveNote({ keys: ["d/4"], duration: "16" }),
-            new Vex.Flow.StaveNote({ keys: ["e/4"], duration: "16" }).
-              addAccidental(0, new Vex.Flow.Accidental("#")),
-            new Vex.Flow.StaveNote({ keys: ["g/4"], duration: "32" }),
-            new Vex.Flow.StaveNote({ keys: ["a/4"], duration: "32" }),
-            new Vex.Flow.StaveNote({ keys: ["g/4"], duration: "16" })
-            ];
+                Vex.Flow.Formatter.FormatAndDraw(ctx, stave, all_notes);
+                for (var i=0; i<all_beams.length; i++) {
+                    all_beams[i].setContext(ctx).draw();
+                }
 
-            var notes4 = [ new Vex.Flow.StaveNote({ keys: ["d/4"], duration: "q" }) ];
-
-            // Create the beams
-            var beam = new Vex.Flow.Beam(notes);
-            var beam2 = new Vex.Flow.Beam(notes2);
-            var beam3 = new Vex.Flow.Beam(notes3);
-
-            var all_notes = notes.concat(notes2).concat(notes3).concat(notes4);
-
-            // Helper function to justify and draw a 4/4 voice
-            Vex.Flow.Formatter.FormatAndDraw(ctx, stave, all_notes);
-
-            // Render beams
-            beam.setContext(ctx).draw();
-            beam2.setContext(ctx).draw();
-            beam3.setContext(ctx).draw();
+            });
         </script>
     </body>
 </html>
