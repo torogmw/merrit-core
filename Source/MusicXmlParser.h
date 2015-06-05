@@ -13,9 +13,10 @@
 #include "JuceHeader.h"
 #include <vector>
 #include <string>
+#include <map>
 
 struct NoteUnit {
-    std::string pitch;  // G3, B4 etc, or we can use a midi note?
+    int pitch;  // G3, B4 etc, or we can use a midi note? yes midi now
     int duration;
     float onsetTime; //the start of the note, should be measure+beat index
     float dynamics;
@@ -33,12 +34,16 @@ public:
     void parseScorePartwise();
     float generateNoteUnit(XmlElement* noteElement, float measureIndex);
     std::vector<NoteUnit> getNotes();
+
 private:
+    int pitchToMidi(String pitch, int octave);
+    
     ScopedPointer<XmlElement> mainScoreElement;
     int noteCount;
     int globalTempo;
     int globalMeasureLength;
     std::vector<NoteUnit> notes;
+    std::map<String, int> midiBase;
 };
 
 #endif /* defined(__merrit_core__MusicXmlParser__) */
