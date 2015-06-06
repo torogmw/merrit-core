@@ -85,17 +85,6 @@ void AudioRecorder::audioDeviceAboutToStart(AudioIODevice* device)
 
 void AudioRecorder::audioDeviceStopped()
 {
-    // hard code score
-    struct Note score[6];
-    score[0].midi_pitch = 71;
-    score[1].midi_pitch = 56;
-    score[2].midi_pitch = 59;
-    score[3].midi_pitch = 64;
-    score[4].midi_pitch = 59;
-    score[5].midi_pitch = 56;
-    float times[6] = {1.0/6.0, 2.0/6.0, 3.0/6.0, 4.0/6.0, 5.0/6.0, 6.0/6.0};
-    audioAnalyzer->SetScore(score, times, 6);
-    
     for (int i=0; i<audioAnalyzer->feature_size; i++) {
         audioAnalyzer->SubbandAnalysis(audioAnalyzer->subband_signals[i], i+audioAnalyzer->min_note);
     }

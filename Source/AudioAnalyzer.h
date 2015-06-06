@@ -14,8 +14,7 @@
 #include <iostream>
 #include <math.h>
 #include "rsrfft.h"
-#include <vector>
-#include <map>
+#include "Song.h"
 
 #define FS_MIR              44100.0
 #define FRAME_TIME          100.0 // in ms
@@ -30,13 +29,6 @@
 #define LOG_2ROOT12         0.057762265 // log(_2ROOT12)
 #define SPECTRAL_FLUX_SIZE  5
 
-struct Note
-{
-    uint32_t midi_pitch;
-    float valence;
-};
-
-typedef std::vector<struct Note> NotesAtTime;
 typedef std::map<float, NotesAtTime> TimedNotes;
 
 class AudioAnalyzer
@@ -48,7 +40,7 @@ public:
     int FrameAnalysis(const float *buffer);
     int FrameAnalysis(const float *buffer, float *out);
     int SubbandAnalysis(std::vector<float> &subband_signal, uint32_t midi_note); // find notes
-    int SetScore(struct Note *score, float *times, uint32_t note_num);
+    int SetScore(std::vector<struct Note> notes, std::vector<float> times);
     float AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::iterator, TimedNotes::iterator>> &alignment*/);
     int Clear();
     float fs;

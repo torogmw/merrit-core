@@ -66,6 +66,7 @@ private:
     ScopedPointer<AudioRecorder> recorder;
     ScopedPointer<MusicXmlParser> notation;
     ScopedPointer<AudioAnalyzer> audioAnalyzer;
+    Song song;
     //[/UserVariables]
 
     //==============================================================================
@@ -76,6 +77,7 @@ private:
     ScopedPointer<TextButton> recordButton;
     ScopedPointer<TextButton> xmlButton;
     ScopedPointer<WebBrowserComponent> webBrowserComponent;
+    ScopedPointer<TextButton> demo;
 
 
     //==============================================================================

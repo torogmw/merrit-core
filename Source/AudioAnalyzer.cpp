@@ -228,10 +228,11 @@ int AudioAnalyzer::SubbandAnalysis(std::vector<float> &subband_signal, uint32_t 
     return 0;
 }
 
-int AudioAnalyzer::SetScore(struct Note *score, float *times, uint32_t note_num)
+int AudioAnalyzer::SetScore(std::vector<struct Note> notes, std::vector<float> times)
 {
-    for (int i = 0; i < note_num; ++i) {
-        score_notes[times[i]].push_back(score[i]);
+    score_notes.clear();
+    for (int i = 0; i < notes.size(); ++i) {
+        score_notes[times[i]].push_back(notes[i]);
     }
     return 0;
 }
@@ -242,7 +243,6 @@ int AudioAnalyzer::Clear()
         subband_signals[i].clear();
     }
     frame_num = 0;
-    score_notes.clear();
     return 0;
 }
 

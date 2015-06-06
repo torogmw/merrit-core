@@ -63,9 +63,15 @@ PlaybackUI::PlaybackUI ()
     addAndMakeVisible (webBrowserComponent = new WebBrowserComponent());
     webBrowserComponent->setName ("web browser component");
 
+    addAndMakeVisible (demo = new TextButton ("demo"));
+    demo->addListener (this);
+    demo->setColour (TextButton::buttonColourId, Colour (0xff91f24b));
+
 
     //[UserPreSize]
     playStopButton->setVisible(false);        // invisible by default
+    recordButton->setVisible(false);
+    loadButton->setVisible(false);
     //[/UserPreSize]
 
     setSize (360, 640);
@@ -82,12 +88,6 @@ PlaybackUI::PlaybackUI ()
     audioAnalyzer = new AudioAnalyzer(FS_MIR, 512);
     inputSource = new AudioInputSource(deviceManager, audioAnalyzer);
     recorder = new AudioRecorder(audioAnalyzer);
-    
-    String score = "b/4,8;g/3,8,#;b/3,8;e/4,8;b/3,8;g/3,8,#";
-    String encoded_score = URL::addEscapeChars(score, true);
-    String s = "file://" + File::getCurrentWorkingDirectory().getFullPathName() + "/../../../../Webpages/index.html?score=" + encoded_score;
-    printf("%ls\n", s.toWideCharPointer());
-    webBrowserComponent->goToURL(s);
     //[/Constructor]
 }
 
@@ -103,6 +103,7 @@ PlaybackUI::~PlaybackUI()
     recordButton = nullptr;
     xmlButton = nullptr;
     webBrowserComponent = nullptr;
+    demo = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -131,8 +132,9 @@ void PlaybackUI::resized()
     resultLabel->setBounds (104, 296, 152, 32);
     title->setBounds (64, 24, 224, 40);
     recordButton->setBounds (104, 72, 150, 24);
-    xmlButton->setBounds (104, 176, 150, 24);
+    xmlButton->setBounds (104, 176, 104, 24);
     webBrowserComponent->setBounds (8, 352, 344, 224);
+    demo->setBounds (216, 176, 39, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -185,6 +187,20 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
             }
         }
         //[/UserButtonCode_xmlButton]
+    }
+    else if (buttonThatWasClicked == demo)
+    {
+        //[UserButtonCode_demo] -- add your button handler code here..
+        song = Song();
+//        String score = "b/4,8;g/3,8,#;b/3,8;e/4,8;b/3,8;g/3,8,#";
+        String encoded_score = URL::addEscapeChars(song.segments[0].scoreForDisplay, true);
+        String s = "file://" + File::getCurrentWorkingDirectory().getFullPathName() + "/../../../../Webpages/index.html?score=" + encoded_score;
+        printf("%ls\n", s.toWideCharPointer());
+        webBrowserComponent->goToURL(s);
+        audioAnalyzer->SetScore(song.segments[0].scoreForAnalyzer, song.segments[0].timesForAnalyzer);
+        recordButton->setVisible(true);
+        loadButton->setVisible(true);
+        //[/UserButtonCode_demo]
     }
 
     //[UserbuttonClicked_Post]
@@ -248,11 +264,14 @@ BEGIN_JUCER_METADATA
               virtualName="" explicitFocusOrder="0" pos="104 72 150 24" buttonText="Record"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="xml button" id="25fd44335f65258a" memberName="xmlButton"
-              virtualName="" explicitFocusOrder="0" pos="104 176 150 24" buttonText="readXML"
+              virtualName="" explicitFocusOrder="0" pos="104 176 104 24" buttonText="readXML"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <GENERICCOMPONENT name="web browser component" id="6d771a11f7ef330e" memberName="webBrowserComponent"
                     virtualName="" explicitFocusOrder="0" pos="8 352 344 224" class="WebBrowserComponent"
                     params=""/>
+  <TEXTBUTTON name="demo" id="85cd60f80316b64e" memberName="demo" virtualName=""
+              explicitFocusOrder="0" pos="216 176 39 24" bgColOff="ff91f24b"
+              buttonText="demo" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
