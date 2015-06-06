@@ -12,7 +12,7 @@
 Song::Song()
 {
     int i;
-    int num_segments = 1;
+    int num_segments = 2;
     segments = std::vector<Segment>(num_segments);
     
     int s0_num_notes = 6;
@@ -24,6 +24,17 @@ Song::Song()
     for (i=0; i<s0_num_notes; i++) {
         segments[0].scoreForAnalyzer[i].midi_pitch = s0_midi_pitches[i];
         segments[0].timesForAnalyzer[i] = s0_times[i];
+    }
+    
+    int s1_num_notes = 6;
+    int s1_midi_pitches[] = {71, 56, 63, 68, 63, 56};
+    float s1_times[] = {1.0/6.0, 2.0/6.0, 3.0/6.0, 4.0/6.0, 5.0/6.0, 6.0/6.0};
+    segments[1].scoreForAnalyzer = std::vector<struct Note>(s1_num_notes);
+    segments[1].timesForAnalyzer = std::vector<float>(s1_num_notes);
+    segments[1].scoreForDisplay = "b/4,8;g/3,8,#;d/4,8,#;g/4,8,#;d/4,8,#;g/3,8,#";
+    for (i=0; i<s1_num_notes; i++) {
+        segments[1].scoreForAnalyzer[i].midi_pitch = s1_midi_pitches[i];
+        segments[1].timesForAnalyzer[i] = s1_times[i];
     }
 }
 

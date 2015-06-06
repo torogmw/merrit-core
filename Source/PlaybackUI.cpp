@@ -192,12 +192,13 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
     {
         //[UserButtonCode_demo] -- add your button handler code here..
         song = Song();
-//        String score = "b/4,8;g/3,8,#;b/3,8;e/4,8;b/3,8;g/3,8,#";
-        String encoded_score = URL::addEscapeChars(song.segments[0].scoreForDisplay, true);
+        int display_segment_index = 0;
+        std::string concat_score = song.segments[display_segment_index].scoreForDisplay + ":" + song.segments[display_segment_index+1].scoreForDisplay;
+        String encoded_score = URL::addEscapeChars(concat_score, true);
         String s = "file://" + File::getCurrentWorkingDirectory().getFullPathName() + "/../../../../Webpages/index.html?score=" + encoded_score;
         printf("%ls\n", s.toWideCharPointer());
         webBrowserComponent->goToURL(s);
-        audioAnalyzer->SetScore(song.segments[0].scoreForAnalyzer, song.segments[0].timesForAnalyzer);
+        audioAnalyzer->SetScore(song.segments[display_segment_index].scoreForAnalyzer, song.segments[display_segment_index].timesForAnalyzer);
         recordButton->setVisible(true);
         loadButton->setVisible(true);
         //[/UserButtonCode_demo]
