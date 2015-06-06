@@ -246,7 +246,7 @@ int AudioAnalyzer::Clear()
     return 0;
 }
 
-int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::iterator, TimedNotes::iterator>> &alignment*/)
+float AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::iterator, TimedNotes::iterator>> &alignment*/)
 {
     int i, j;
     TimedNotes::iterator it, jt;
@@ -325,12 +325,6 @@ int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::itera
         }
     }
     
-    std::vector<float>::iterator backtracked_it;
-    std::vector<float>::iterator backtracked_jt;
-    for (backtracked_it=backtracked_is.begin(),backtracked_jt=backtracked_js.begin(); backtracked_it!=backtracked_is.end(); backtracked_it++,backtracked_jt++) {
-        printf("%f,%f\n", *backtracked_it, *backtracked_jt);
-    }
-    
     /*
      this is correct alignment for first_bar_44100.wav
      2.194286,1.000000
@@ -341,11 +335,38 @@ int AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::itera
      0.046440,0.166667
      */
     
+    // linear regression
+    int n = backtracked_is.size();
+    float x_bar = 0.;
+    float y_bar = 0.;
+    float sum_x_y = 0.;
+    float sum_x_x = 0.;
+    for (i=0; i<n; i++) {
+        x_bar += backtracked_is[i];
+        y_bar += backtracked_js[i];
+        sum_x_y += (backtracked_is[i] * backtracked_js[i]);
+        sum_x_x += (backtracked_is[i] * backtracked_is[i]);
+    }
+    x_bar /= n;
+    y_bar /= n;
+
+    float slope = (sum_x_y - n * x_bar * y_bar) / (sum_x_x - n * x_bar * x_bar);
+    float intercept = y_bar - slope * x_bar;
+    
+    // normalize audio time and calculate play grade
+    float grade = 0.;
+    for (i=0; i<n; i++) {
+        float diff = slope * backtracked_is[i] + intercept - backtracked_js[i];
+        if (diff < 0) diff = -diff;
+        grade += (-400 * diff + 100);
+    }
+    grade /= n;
+    
     for (i=0; i<audio_notes.size(); i++) {
         delete [] S[i];
         delete [] P[i];
     }
     delete [] S;
     delete [] P;
-    return 0;
+    return grade;
 }

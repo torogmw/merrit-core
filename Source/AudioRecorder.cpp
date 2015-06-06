@@ -106,8 +106,8 @@ void AudioRecorder::audioDeviceStopped()
 //        }
 //        printf("\n");
 //    }
-    audioAnalyzer->AudioScoreAlignment();
-    
+    float grade = audioAnalyzer->AudioScoreAlignment();
+    printf("grade=%f\n", grade);
 }
 
 void AudioRecorder::audioDeviceIOCallback (const float** inputChannelData, int /*numInputChannels*/,

@@ -71,7 +71,8 @@ void AudioInputSource::setFile(File audioFile)
 //            printf("\n");
 //        }
         
-        audioAnalyzer->AudioScoreAlignment();
+        float grade = audioAnalyzer->AudioScoreAlignment();
+        printf("grade=%f\n", grade);
     }
 }
 
