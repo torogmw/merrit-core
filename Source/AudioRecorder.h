@@ -16,7 +16,7 @@
 class AudioRecorder : public AudioIODeviceCallback
 {
 public:
-    AudioRecorder();
+    AudioRecorder(AudioAnalyzer *audioAnalyzer);
     ~AudioRecorder();
     void startRecording(const File& file);
     void stop();
@@ -32,9 +32,9 @@ private:
     ScopedPointer<AudioFormatWriter::ThreadedWriter> threadedWriter; // the FIFO used to buffer the incoming data
     double sampleRate;
     int64 nextSampleNum;
+    AudioAnalyzer *audioAnalyzer;
     
     CriticalSection writerLock;
     AudioFormatWriter::ThreadedWriter* volatile activeWriter;
-    AudioAnalyzer *audioAnalyzer;
 };
 #endif /* defined(__merrit_core__AudioRecorder__) */

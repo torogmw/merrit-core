@@ -8,12 +8,12 @@
 
 #include "AudioInputSource.h"
 
-AudioInputSource::AudioInputSource(AudioDeviceManager& deviceManager_):deviceManager(deviceManager_), playingThread("audio Input source")
+AudioInputSource::AudioInputSource(AudioDeviceManager& deviceManager_, AudioAnalyzer *audioAnalyzer_):deviceManager(deviceManager_), playingThread("audio Input source")
 {
     formatManager.registerBasicFormats();
     audioSourcePlayer.setSource(&transportSource);
     playingThread.startThread();
-    audioAnalyzer = new AudioAnalyzer(FS_MIR, 512);
+    audioAnalyzer = audioAnalyzer_;
     numSamplesReadFromFile = 0;
 }
 

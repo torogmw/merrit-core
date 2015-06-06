@@ -8,10 +8,10 @@
 
 #include "AudioRecorder.h"
 
-AudioRecorder::AudioRecorder():backgroundThread ("Audio Recorder Thread"),
+AudioRecorder::AudioRecorder(AudioAnalyzer *audioAnalyzer_):backgroundThread ("Audio Recorder Thread"),
 sampleRate (0), nextSampleNum (0), activeWriter (nullptr)
 {
-    audioAnalyzer = new AudioAnalyzer(FS_MIR, 512);
+    audioAnalyzer = audioAnalyzer_;
     backgroundThread.startThread();
 }
 

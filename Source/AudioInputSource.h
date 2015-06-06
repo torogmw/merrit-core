@@ -18,7 +18,7 @@
 class AudioInputSource : public AudioIODeviceCallback
 {
 public:
-    AudioInputSource(AudioDeviceManager& deviceManager);
+    AudioInputSource(AudioDeviceManager& deviceManager, AudioAnalyzer *audioAnalyzer);
     ~AudioInputSource();
     void audioDeviceIOCallback(const float** inputChannelData,
                                int totalNumInputChannels,

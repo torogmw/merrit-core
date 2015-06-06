@@ -25,7 +25,7 @@
 #include "AudioInputSource.h"
 #include "AudioRecorder.h"
 #include "MusicXmlParser.h"
-#include <GUIDOEngine/GUIDOEngine.h>
+#include "AudioAnalyzer.h"
 //[/Headers]
 
 
@@ -65,6 +65,7 @@ private:
     ScopedPointer<AudioInputSource> inputSource;
     ScopedPointer<AudioRecorder> recorder;
     ScopedPointer<MusicXmlParser> notation;
+    ScopedPointer<AudioAnalyzer> audioAnalyzer;
     //[/UserVariables]
 
     //==============================================================================

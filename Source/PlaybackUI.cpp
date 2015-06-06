@@ -79,8 +79,9 @@ PlaybackUI::PlaybackUI ()
                              true, /* select default device on failure */
                              String::empty, /* preferred device name */
                              &audioDeviceSetup /* preferred setup options */);
-    inputSource = new AudioInputSource(deviceManager);
-    recorder = new AudioRecorder();
+    audioAnalyzer = new AudioAnalyzer(FS_MIR, 512);
+    inputSource = new AudioInputSource(deviceManager, audioAnalyzer);
+    recorder = new AudioRecorder(audioAnalyzer);
     
     String score = "b/4,8;g/3,8,#;b/3,8;e/4,8;b/3,8;g/3,8,#";
     String encoded_score = URL::addEscapeChars(score, true);
