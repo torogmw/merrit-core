@@ -19,7 +19,7 @@
                 console.log(param)
 
                 if (!param)
-                    param = "e/5,8d,##;b/4,16,b:c/4,8;d/4,16;e/4,16,b:d/4,16;e/4,16,#;g/4,32;a/4,32;g/4,16:d/4,q";
+                    param = "b/5,8;g/4,8,#;b/4,8;e/5,8;b/4,8;g/4,8,#";
 
                 staves_str = param.split(":");
                 all_notes = [];
@@ -50,7 +50,7 @@
                     Vex.Flow.Renderer.Backends.CANVAS);
 
                 var ctx = renderer.getContext();
-                var stave = new Vex.Flow.Stave(10, 0, 500);
+                var stave = new Vex.Flow.Stave(10, 20, 500);
 
                 // Add a treble clef
                 stave.addClef("treble");
