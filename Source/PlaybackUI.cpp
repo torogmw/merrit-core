@@ -121,7 +121,7 @@ PlaybackUI::PlaybackUI ()
                              &audioDeviceSetup /* preferred setup options */);
     audioAnalyzer = new AudioAnalyzer(FS_MIR, 512);
     inputSource = new AudioInputSource(deviceManager, audioAnalyzer);
-    recorder = new AudioRecorder(audioAnalyzer);
+    recorder = new AudioRecorder(audioAnalyzer, resultLabel);
     //[/Constructor]
 }
 

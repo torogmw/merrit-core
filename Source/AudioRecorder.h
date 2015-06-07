@@ -16,7 +16,7 @@
 class AudioRecorder : public AudioIODeviceCallback
 {
 public:
-    AudioRecorder(AudioAnalyzer *audioAnalyzer);
+    AudioRecorder(AudioAnalyzer *audioAnalyzer, Label *grade_display);
     ~AudioRecorder();
     void startRecording(const File& file);
     void stop();
@@ -36,5 +36,7 @@ private:
     
     CriticalSection writerLock;
     AudioFormatWriter::ThreadedWriter* volatile activeWriter;
+    
+    Label *grade_display;
 };
 #endif /* defined(__merrit_core__AudioRecorder__) */

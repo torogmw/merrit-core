@@ -8,10 +8,11 @@
 
 #include "AudioRecorder.h"
 
-AudioRecorder::AudioRecorder(AudioAnalyzer *audioAnalyzer_):backgroundThread ("Audio Recorder Thread"),
+AudioRecorder::AudioRecorder(AudioAnalyzer *audioAnalyzer_, Label *grade_display_):backgroundThread ("Audio Recorder Thread"),
 sampleRate (0), nextSampleNum (0), activeWriter (nullptr)
 {
     audioAnalyzer = audioAnalyzer_;
+    grade_display = grade_display_;
     backgroundThread.startThread();
 }
 
@@ -97,6 +98,7 @@ void AudioRecorder::audioDeviceStopped()
 //    }
     float grade = audioAnalyzer->AudioScoreAlignment();
     printf("grade=%f\n", grade);
+    grade_display->setText(String(grade), dontSendNotification);
 }
 
 void AudioRecorder::audioDeviceIOCallback (const float** inputChannelData, int /*numInputChannels*/,
