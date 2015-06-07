@@ -78,6 +78,10 @@ private:
     ScopedPointer<TextButton> xmlButton;
     ScopedPointer<WebBrowserComponent> webBrowserComponent;
     ScopedPointer<TextButton> demo;
+    ScopedPointer<TextEditor> bpmTextbox;
+    ScopedPointer<TextEditor> bar_textbox;
+    ScopedPointer<Label> label;
+    ScopedPointer<Label> label2;
 
 
     //==============================================================================

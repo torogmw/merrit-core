@@ -67,6 +67,40 @@ PlaybackUI::PlaybackUI ()
     demo->addListener (this);
     demo->setColour (TextButton::buttonColourId, Colour (0xff91f24b));
 
+    addAndMakeVisible (bpmTextbox = new TextEditor ("bpm textbox"));
+    bpmTextbox->setMultiLine (false);
+    bpmTextbox->setReturnKeyStartsNewLine (false);
+    bpmTextbox->setReadOnly (false);
+    bpmTextbox->setScrollbarsShown (true);
+    bpmTextbox->setCaretVisible (true);
+    bpmTextbox->setPopupMenuEnabled (true);
+    bpmTextbox->setText (TRANS("120"));
+
+    addAndMakeVisible (bar_textbox = new TextEditor ("bar textbox"));
+    bar_textbox->setMultiLine (false);
+    bar_textbox->setReturnKeyStartsNewLine (false);
+    bar_textbox->setReadOnly (false);
+    bar_textbox->setScrollbarsShown (true);
+    bar_textbox->setCaretVisible (true);
+    bar_textbox->setPopupMenuEnabled (true);
+    bar_textbox->setText (TRANS("0"));
+
+    addAndMakeVisible (label = new Label ("new label",
+                                          TRANS("BPM")));
+    label->setFont (Font (15.00f, Font::plain));
+    label->setJustificationType (Justification::centredLeft);
+    label->setEditable (false, false, false);
+    label->setColour (TextEditor::textColourId, Colours::black);
+    label->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    addAndMakeVisible (label2 = new Label ("new label",
+                                           TRANS("bar #")));
+    label2->setFont (Font (15.00f, Font::plain));
+    label2->setJustificationType (Justification::centredLeft);
+    label2->setEditable (false, false, false);
+    label2->setColour (TextEditor::textColourId, Colours::black);
+    label2->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
 
     //[UserPreSize]
     playStopButton->setVisible(false);        // invisible by default
@@ -104,6 +138,10 @@ PlaybackUI::~PlaybackUI()
     xmlButton = nullptr;
     webBrowserComponent = nullptr;
     demo = nullptr;
+    bpmTextbox = nullptr;
+    bar_textbox = nullptr;
+    label = nullptr;
+    label2 = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -135,6 +173,10 @@ void PlaybackUI::resized()
     xmlButton->setBounds (104, 176, 104, 24);
     webBrowserComponent->setBounds (8, 352, 344, 224);
     demo->setBounds (216, 176, 39, 24);
+    bpmTextbox->setBounds (280, 120, 64, 24);
+    bar_textbox->setBounds (280, 184, 64, 24);
+    label->setBounds (280, 88, 71, 24);
+    label2->setBounds (280, 160, 71, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -192,8 +234,8 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
     {
         //[UserButtonCode_demo] -- add your button handler code here..
         song = Song();
-        int display_segment_index = 0;
-        std::string concat_score = song.segments[display_segment_index].scoreForDisplay + ":" + song.segments[display_segment_index+1].scoreForDisplay;
+        int display_segment_index = bar_textbox->getText().getIntValue();
+        std::string concat_score = song.segments[display_segment_index].scoreForDisplay;
         String encoded_score = URL::addEscapeChars(concat_score, true);
         String s = "file://" + File::getCurrentWorkingDirectory().getFullPathName() + "/../../../../Webpages/index.html?score=" + encoded_score;
         printf("%ls\n", s.toWideCharPointer());
@@ -273,6 +315,24 @@ BEGIN_JUCER_METADATA
   <TEXTBUTTON name="demo" id="85cd60f80316b64e" memberName="demo" virtualName=""
               explicitFocusOrder="0" pos="216 176 39 24" bgColOff="ff91f24b"
               buttonText="demo" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTEDITOR name="bpm textbox" id="bb7d1b8c7fdbb5ed" memberName="bpmTextbox"
+              virtualName="" explicitFocusOrder="0" pos="280 120 64 24" initialText="120"
+              multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
+              caret="1" popupmenu="1"/>
+  <TEXTEDITOR name="bar textbox" id="66646c0e4ae4e4fd" memberName="bar_textbox"
+              virtualName="" explicitFocusOrder="0" pos="280 184 64 24" initialText="0"
+              multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
+              caret="1" popupmenu="1"/>
+  <LABEL name="new label" id="27d9be3876fa4763" memberName="label" virtualName=""
+         explicitFocusOrder="0" pos="280 88 71 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="BPM" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
+  <LABEL name="new label" id="70729000d345ad44" memberName="label2" virtualName=""
+         explicitFocusOrder="0" pos="280 160 71 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="bar #" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
