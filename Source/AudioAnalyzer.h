@@ -41,7 +41,7 @@ public:
     int FrameAnalysis(const float *buffer, float *out);
     int SubbandAnalysis(std::vector<float> &subband_signal, uint32_t midi_note); // find notes
     int SetScore(std::vector<struct Note> notes, std::vector<float> times);
-    float AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::iterator, TimedNotes::iterator>> &alignment*/);
+    float AudioScoreAlignment();
     int Clear();
     float fs;
     uint32_t frame_size;

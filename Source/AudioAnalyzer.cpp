@@ -239,6 +239,7 @@ int AudioAnalyzer::SetScore(std::vector<struct Note> notes, std::vector<float> t
 
 int AudioAnalyzer::Clear()
 {
+    audio_notes.clear();
     for (int i=0; i<feature_size; i++) {
         subband_signals[i].clear();
     }
@@ -246,7 +247,7 @@ int AudioAnalyzer::Clear()
     return 0;
 }
 
-float AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::iterator, TimedNotes::iterator>> &alignment*/)
+float AudioAnalyzer::AudioScoreAlignment()
 {
     int i, j;
     TimedNotes::iterator it, jt;
@@ -298,13 +299,6 @@ float AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::ite
         }
     }
     
-//    for (i=0; i<audio_notes.size()+1; i++) {
-//        for (j=0; j<score_notes.size()+1; j++) {
-//            printf("%f,", S[i][j]);
-//        }
-//        printf("\n");
-//    }
-    
     uint32_t curr_i = audio_notes.size();
     uint32_t curr_j = score_notes.size();
     std::vector<float> backtracked_is;
@@ -317,7 +311,6 @@ float AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::ite
             curr_j --;
         }
         else {
-//            printf("%d,%d\n", curr_i-1, curr_j-1);
             backtracked_is.push_back(audio_notes_index_to_time[curr_i-1]);
             backtracked_js.push_back(score_notes_index_to_time[curr_j-1]);
             curr_i --;
@@ -357,10 +350,11 @@ float AudioAnalyzer::AudioScoreAlignment(/*std::vector<std::pair<TimedNotes::ite
     float grade = 0.;
     for (i=0; i<n; i++) {
         float diff = slope * backtracked_is[i] + intercept - backtracked_js[i];
+        printf("%d\t%f\t%f\t%f\n", i, diff, backtracked_is[i], backtracked_js[i]);
         if (diff < 0) diff = -diff;
-        grade += (-400 * diff + 100);
+        grade += (diff > 0.125 ? 0 : cos(12.566*diff));
     }
-    grade /= n;
+    grade /= score_notes.size();
     
     for (i=0; i<audio_notes.size(); i++) {
         delete [] S[i];
