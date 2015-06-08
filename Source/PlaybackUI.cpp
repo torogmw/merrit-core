@@ -44,17 +44,10 @@ PlaybackUI::PlaybackUI ()
     resultLabel->setColour (TextEditor::textColourId, Colours::black);
     resultLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (title = new Label ("title",
-                                          TRANS("Audio PoC 0.1")));
-    title->setFont (Font ("Marion", 19.50f, Font::bold));
-    title->setJustificationType (Justification::centred);
-    title->setEditable (false, false, false);
-    title->setColour (TextEditor::textColourId, Colours::black);
-    title->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-
     addAndMakeVisible (recordButton = new TextButton ("record button"));
     recordButton->setButtonText (TRANS("Record"));
     recordButton->addListener (this);
+    recordButton->setColour (TextButton::buttonColourId, Colours::red);
 
     addAndMakeVisible (xmlButton = new TextButton ("xml button"));
     xmlButton->setButtonText (TRANS("readXML"));
@@ -108,7 +101,7 @@ PlaybackUI::PlaybackUI ()
     loadButton->setVisible(false);
     //[/UserPreSize]
 
-    setSize (360, 640);
+    setSize (640, 360);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -133,7 +126,6 @@ PlaybackUI::~PlaybackUI()
     playStopButton = nullptr;
     loadButton = nullptr;
     resultLabel = nullptr;
-    title = nullptr;
     recordButton = nullptr;
     xmlButton = nullptr;
     webBrowserComponent = nullptr;
@@ -165,18 +157,17 @@ void PlaybackUI::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    playStopButton->setBounds (104, 240, 150, 24);
-    loadButton->setBounds (104, 120, 150, 24);
-    resultLabel->setBounds (104, 296, 152, 32);
-    title->setBounds (64, 24, 224, 40);
-    recordButton->setBounds (104, 72, 150, 24);
-    xmlButton->setBounds (104, 176, 104, 24);
-    webBrowserComponent->setBounds (8, 352, 344, 224);
-    demo->setBounds (216, 176, 39, 24);
-    bpmTextbox->setBounds (280, 120, 64, 24);
-    bar_textbox->setBounds (280, 184, 64, 24);
-    label->setBounds (280, 88, 71, 24);
-    label2->setBounds (280, 160, 71, 24);
+    playStopButton->setBounds (240, 320, 38, 24);
+    loadButton->setBounds (192, 320, 38, 24);
+    resultLabel->setBounds (296, 320, 152, 32);
+    recordButton->setBounds (24, 320, 48, 24);
+    xmlButton->setBounds (80, 320, 56, 24);
+    webBrowserComponent->setBounds (0, 0, 624, 296);
+    demo->setBounds (144, 320, 39, 24);
+    bpmTextbox->setBounds (544, 320, 64, 24);
+    bar_textbox->setBounds (472, 320, 64, 24);
+    label->setBounds (544, 296, 32, 24);
+    label2->setBounds (472, 296, 40, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -236,7 +227,7 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
         song = Song();
         int display_segment_index = bar_textbox->getText().getIntValue();
         std::string concat_score = song.segments[display_segment_index].scoreForDisplay;
-        String encoded_score = URL::addEscapeChars(concat_score, true);
+        String encoded_score = URL::addEscapeChars(song.scoreHeader + concat_score, true);
         String s = "file://" + File::getCurrentWorkingDirectory().getFullPathName() + "/../../../../Webpages/index.html?score=" + encoded_score;
         printf("%ls\n", s.toWideCharPointer());
         webBrowserComponent->goToURL(s);
@@ -285,51 +276,46 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="PlaybackUI" componentName=""
                  parentClasses="public Component" constructorParams="" variableInitialisers=""
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="360" initialHeight="640">
+                 fixedSize="1" initialWidth="640" initialHeight="360">
   <BACKGROUND backgroundColour="ffffffff"/>
   <TEXTBUTTON name="play / stop" id="691427fc69b5adc6" memberName="playStopButton"
-              virtualName="" explicitFocusOrder="0" pos="104 240 150 24" buttonText="play / stop"
+              virtualName="" explicitFocusOrder="0" pos="240 320 38 24" buttonText="play / stop"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="load button" id="1d59d8ea76ceba03" memberName="loadButton"
-              virtualName="" explicitFocusOrder="0" pos="104 120 150 24" buttonText="load"
+              virtualName="" explicitFocusOrder="0" pos="192 320 38 24" buttonText="load"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <LABEL name="result label" id="f3671d4a4efe8c7b" memberName="resultLabel"
-         virtualName="" explicitFocusOrder="0" pos="104 296 152 32" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="296 320 152 32" edTextCol="ff000000"
          edBkgCol="0" labelText="result" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
          bold="0" italic="0" justification="12"/>
-  <LABEL name="title" id="8c8b576e0a1edba7" memberName="title" virtualName=""
-         explicitFocusOrder="0" pos="64 24 224 40" edTextCol="ff000000"
-         edBkgCol="0" labelText="Audio PoC 0.1" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Marion"
-         fontsize="19.5" bold="1" italic="0" justification="36"/>
   <TEXTBUTTON name="record button" id="477e06bd4f00f984" memberName="recordButton"
-              virtualName="" explicitFocusOrder="0" pos="104 72 150 24" buttonText="Record"
-              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+              virtualName="" explicitFocusOrder="0" pos="24 320 48 24" bgColOff="ffff0000"
+              buttonText="Record" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="xml button" id="25fd44335f65258a" memberName="xmlButton"
-              virtualName="" explicitFocusOrder="0" pos="104 176 104 24" buttonText="readXML"
+              virtualName="" explicitFocusOrder="0" pos="80 320 56 24" buttonText="readXML"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <GENERICCOMPONENT name="web browser component" id="6d771a11f7ef330e" memberName="webBrowserComponent"
-                    virtualName="" explicitFocusOrder="0" pos="8 352 344 224" class="WebBrowserComponent"
+                    virtualName="" explicitFocusOrder="0" pos="0 0 624 296" class="WebBrowserComponent"
                     params=""/>
   <TEXTBUTTON name="demo" id="85cd60f80316b64e" memberName="demo" virtualName=""
-              explicitFocusOrder="0" pos="216 176 39 24" bgColOff="ff91f24b"
+              explicitFocusOrder="0" pos="144 320 39 24" bgColOff="ff91f24b"
               buttonText="demo" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTEDITOR name="bpm textbox" id="bb7d1b8c7fdbb5ed" memberName="bpmTextbox"
-              virtualName="" explicitFocusOrder="0" pos="280 120 64 24" initialText="120"
+              virtualName="" explicitFocusOrder="0" pos="544 320 64 24" initialText="120"
               multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
               caret="1" popupmenu="1"/>
   <TEXTEDITOR name="bar textbox" id="66646c0e4ae4e4fd" memberName="bar_textbox"
-              virtualName="" explicitFocusOrder="0" pos="280 184 64 24" initialText="0"
+              virtualName="" explicitFocusOrder="0" pos="472 320 64 24" initialText="0"
               multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
               caret="1" popupmenu="1"/>
   <LABEL name="new label" id="27d9be3876fa4763" memberName="label" virtualName=""
-         explicitFocusOrder="0" pos="280 88 71 24" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="544 296 32 24" edTextCol="ff000000"
          edBkgCol="0" labelText="BPM" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
          bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="70729000d345ad44" memberName="label2" virtualName=""
-         explicitFocusOrder="0" pos="280 160 71 24" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="472 296 40 24" edTextCol="ff000000"
          edBkgCol="0" labelText="bar #" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
          bold="0" italic="0" justification="33"/>

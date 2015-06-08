@@ -73,7 +73,6 @@ private:
     ScopedPointer<TextButton> playStopButton;
     ScopedPointer<TextButton> loadButton;
     ScopedPointer<Label> resultLabel;
-    ScopedPointer<Label> title;
     ScopedPointer<TextButton> recordButton;
     ScopedPointer<TextButton> xmlButton;
     ScopedPointer<WebBrowserComponent> webBrowserComponent;

@@ -34,6 +34,9 @@ public:
     Song();
     ~Song();
     std::string title;
+    std::string timeSignature;
+    std::string keySignature;
+    std::string scoreHeader;
     std::vector<Segment> segments;
 };
 
