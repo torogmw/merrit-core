@@ -32,18 +32,21 @@ public:
     int countNotes() const;
     void parseScoreTimewise();
     void parseScorePartwise();
-    float generateNoteUnit(XmlElement* noteElement, float measureIndex);
     std::vector<NoteUnit> getNotes();
 
 private:
-    int pitchToMidi(String pitch, int octave);
-    
+    int pitchToMidi(String pitch, int octave, int alter);
+    float generateNoteUnit(XmlElement* noteElement, float measureIndex);
+    void generateGlobalAttribute(XmlElement* attributeElement);
+
     ScopedPointer<XmlElement> mainScoreElement;
     int noteCount;
     int globalTempo;
     int globalMeasureLength;
+    int keySignature;
     std::vector<NoteUnit> notes;
     std::map<String, int> midiBase;
+    std::map<int, std::vector<int> > keyMap;  // circle of fifth step -> vector of key +/- from C to B 
 };
 
 #endif /* defined(__merrit_core__MusicXmlParser__) */
