@@ -11,18 +11,6 @@
 
 MusicXmlParser :: MusicXmlParser(const File &xmlFile)
 {
-    mainScoreElement = new XmlElement(*XmlDocument :: parse(xmlFile));
-    String scoreType = mainScoreElement -> getTagName();
-    if (scoreType == "score-partwise") {
-        // parse the partwise score
-        parseScorePartwise();
-        
-    } else if (scoreType == "score-timewise") {
-        // parse the timewise score
-    } else {
-        std::cout<< "parse error" <<std::endl;
-    }
-    
     // add midi note hashmap
     midiBase["C"] = 0;
     midiBase["C#"] = 1;
@@ -51,6 +39,18 @@ MusicXmlParser :: MusicXmlParser(const File &xmlFile)
     keyMap[3] = std::vector<int>{1,0,0,1,1,0,0};       // A - f#
     keyMap[4] = std::vector<int>{1,1,0,1,1,0,0};       // E - c#
     keyMap[5] = std::vector<int>{1,1,0,1,1,1,0};       // B - g#
+    
+    mainScoreElement = new XmlElement(*XmlDocument :: parse(xmlFile));
+    String scoreType = mainScoreElement -> getTagName();
+    if (scoreType == "score-partwise") {
+        // parse the partwise score
+        parseScorePartwise();
+        
+    } else if (scoreType == "score-timewise") {
+        // parse the timewise score
+    } else {
+        std::cout<< "parse error" <<std::endl;
+    }
 }
 
 MusicXmlParser :: ~MusicXmlParser()
