@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "MusicXmlParser.h"
 
 struct Note
 {
@@ -20,10 +21,10 @@ struct Note
     float valence;
 };
 
-typedef std::vector<struct Note> NotesAtTime;
+typedef std::vector<Note> NotesAtTime;
 
 struct Segment {
-    std::vector<struct Note> scoreForAnalyzer;
+    std::vector<Note> scoreForAnalyzer;
     std::vector<float> timesForAnalyzer;
     std::string scoreForDisplay;
 };
@@ -31,6 +32,7 @@ struct Segment {
 class Song {
 public:
     Song(char *xmlfilename);
+    Song(std::vector<NoteUnit>& notes);
     Song();
     ~Song();
     std::string title;

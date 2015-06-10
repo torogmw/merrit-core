@@ -23,6 +23,10 @@ struct NoteUnit {
     float voice; // not sure what this is
 };
 
+struct MeasureUnit {
+    std::vector<NoteUnit> notes;
+    std::string scoreForDisplay;
+};
 
 class MusicXmlParser
 {
