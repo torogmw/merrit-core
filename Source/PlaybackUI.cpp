@@ -234,7 +234,7 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
         audioAnalyzer->SetScore(song.segments[display_segment_index].scoreForAnalyzer, song.segments[display_segment_index].timesForAnalyzer);
         recordButton->setVisible(true);
         loadButton->setVisible(true);
-        beatTimer.setTimer(120, 6);
+        beatTimer.setTimer(bpmTextbox->getText().getIntValue(), 3); // hard-code time-signature for now
         
         //[/UserButtonCode_demo]
     }

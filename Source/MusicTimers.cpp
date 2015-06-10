@@ -30,11 +30,11 @@ void BeatTimer::timerCallback()
     if (beat_counter == num_beats_in_measure) {
         beat_counter = 0;
     }
+    printf("current beat:%u\n", beat_counter);
 }
 
 void BeatTimer::startTimer()
 {
-    printf("%d\n", intervalInMilliseconds);
     juce::Timer::startTimer(intervalInMilliseconds);
 }
 
