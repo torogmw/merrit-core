@@ -26,6 +26,7 @@
 #include "AudioRecorder.h"
 #include "MusicXmlParser.h"
 #include "AudioAnalyzer.h"
+#include "MusicTimers.h"
 //[/Headers]
 
 
@@ -66,7 +67,9 @@ private:
     ScopedPointer<AudioRecorder> recorder;
     ScopedPointer<MusicXmlParser> notation;
     ScopedPointer<AudioAnalyzer> audioAnalyzer;
+    BeatTimer beatTimer;
     Song song;
+    
     //[/UserVariables]
 
     //==============================================================================
