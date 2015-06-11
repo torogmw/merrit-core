@@ -224,7 +224,7 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == demo)
     {
         //[UserButtonCode_demo] -- add your button handler code here..
-        song = Song();
+        song = Song(notation->getMeasures());
         int display_segment_index = bar_textbox->getText().getIntValue();
         std::string concat_score = song.segments[display_segment_index].scoreForDisplay;
         String encoded_score = URL::addEscapeChars(song.scoreHeader + concat_score, true);

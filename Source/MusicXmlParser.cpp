@@ -55,13 +55,12 @@ MusicXmlParser :: MusicXmlParser(const File &xmlFile)
 
 MusicXmlParser :: ~MusicXmlParser()
 {
-    noteCount = 0;
     mainScoreElement = nullptr;
 }
 
 int MusicXmlParser :: countNotes() const
 {
-    return noteCount;
+    return allNotes.size();
 }
 
 void MusicXmlParser::parseScorePartwise()
@@ -91,19 +90,21 @@ void MusicXmlParser::parseScorePartwise()
             }
         }
     }
+
     // second, get the core Eleement and count the measures
     for (int i = 0; i < measureCount; i++)
     {
         // for each measure, store all the note / volume / duration into a vector of hashmap
         float measureIndex = float(i+1);
         measureElement = coreElement -> getChildElement(i);
+        MeasureUnit measureUnit;
         int numElementPerMeasure = measureElement -> getNumChildElements();
         for (int j = 0; j<numElementPerMeasure; j++)
         {
             if (measureElement->getChildElement(j)->getTagName() == "note") {
                 std::cout<<"note!"<<std::endl;
                 noteElement = measureElement->getChildElement(j);
-                measureIndex = generateNoteUnit(noteElement, measureIndex); // update the measure index
+                measureIndex = generateNoteUnit(noteElement, measureIndex, measureUnit); // update the measure index
             } else if (measureElement->getChildElement(j)->getTagName() == "backup") {
                 std::cout<<"backup!"<<std::endl;
                 noteElement = measureElement->getChildElement(j);
@@ -113,6 +114,8 @@ void MusicXmlParser::parseScorePartwise()
                 std::cout<<"fuck!"<<std::endl;
             }
         }
+        measureUnit.scoreForDisplay = generateScoreString(measureUnit);
+        measures.push_back(measureUnit);
     }
     noteElement = nullptr;
     measureElement = nullptr;
@@ -124,7 +127,7 @@ void MusicXmlParser::parseScoreTimewise()
     
 }
 
-float MusicXmlParser::generateNoteUnit(XmlElement* noteElement, float measureIndex)
+float MusicXmlParser::generateNoteUnit(XmlElement* noteElement, float measureIndex, MeasureUnit& measureUnit)
 {
     NoteUnit noteUnit;
     if (noteElement->getChildByName("pitch"))
@@ -145,7 +148,8 @@ float MusicXmlParser::generateNoteUnit(XmlElement* noteElement, float measureInd
         noteUnit.onsetTime = measureIndex;
         noteUnit.voice = std::stoi(voice.toStdString());
         noteUnit.dynamics = 0;  // set to 0 for now
-        notes.push_back(noteUnit);
+        allNotes.push_back(noteUnit);
+        measureUnit.notes.push_back(noteUnit);
         float newMeasureIndex = measureIndex + float(noteUnit.duration) / globalMeasureLength;
         return newMeasureIndex;
     } else {
@@ -165,10 +169,26 @@ void MusicXmlParser::generateGlobalAttribute(XmlElement* attributeElement)
 
 std::vector<NoteUnit> MusicXmlParser::getNotes()
 {
-    return notes;
+    return allNotes;
+}
+
+std::vector<MeasureUnit> MusicXmlParser::getMeasures()
+{
+    return measures;
 }
 
 int MusicXmlParser::pitchToMidi(String pitch, int octave, int alter)
 {
     return (octave + 1) * 12 + midiBase[pitch] + alter;
+}
+
+// please parse the string info here
+std::string MusicXmlParser::generateScoreString(MeasureUnit& measureUnit) const
+{
+    std::string displayString = "voice\nnotes :hd";
+    if (measureUnit.notes.size() > 0) {
+        return "";
+    } else {
+        return "";
+    }
 }
