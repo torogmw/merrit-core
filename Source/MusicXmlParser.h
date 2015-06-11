@@ -37,18 +37,20 @@ public:
     void parseScoreTimewise();
     void parseScorePartwise();
     std::vector<NoteUnit> getNotes();
+    std::vector<MeasureUnit> getMeasures();
 
 private:
     int pitchToMidi(String pitch, int octave, int alter);
-    float generateNoteUnit(XmlElement* noteElement, float measureIndex);
+    float generateNoteUnit(XmlElement* noteElement, float measureIndex, MeasureUnit& measureUnit);
     void generateGlobalAttribute(XmlElement* attributeElement);
+    std::string generateScoreString(MeasureUnit& measureUnit) const;
 
     ScopedPointer<XmlElement> mainScoreElement;
-    int noteCount;
     int globalTempo;
     int globalMeasureLength;
     int keySignature;
-    std::vector<NoteUnit> notes;
+    std::vector<NoteUnit> allNotes;
+    std::vector<MeasureUnit> measures;
     std::map<String, int> midiBase;
     std::map<int, std::vector<int> > keyMap;  // circle of fifth step -> vector of key +/- from C to B 
 };

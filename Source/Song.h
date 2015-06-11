@@ -30,9 +30,10 @@ struct Segment {
 };
 
 class Song {
+
 public:
     Song(char *xmlfilename);
-    Song(std::vector<NoteUnit>& notes);
+    Song(const std::vector<MeasureUnit>& measures);
     Song();
     ~Song();
     std::string title;
