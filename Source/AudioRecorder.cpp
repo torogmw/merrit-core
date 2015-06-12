@@ -86,19 +86,7 @@ void AudioRecorder::audioDeviceAboutToStart(AudioIODevice* device)
 
 void AudioRecorder::audioDeviceStopped()
 {
-    for (int i=0; i<audioAnalyzer->feature_size; i++) {
-        audioAnalyzer->SubbandAnalysis(audioAnalyzer->subband_signals[i], i+audioAnalyzer->min_note);
-    }
-//    for (TimedNotes::iterator it = audioAnalyzer->audio_notes.begin(); it != audioAnalyzer->audio_notes.end(); it++) {
-//        printf("%f:", it->first);
-//        for (std::vector<struct Note>::iterator kt=it->second.begin(); kt!=it->second.end(); kt++) {
-//            printf("%u,%f ", kt->midi_pitch, kt->valence);
-//        }
-//        printf("\n");
-//    }
-    float grade = audioAnalyzer->AudioScoreAlignment();
-    printf("grade=%f\n", grade);
-    grade_display->setText(String(grade), dontSendNotification);
+
 }
 
 void AudioRecorder::audioDeviceIOCallback (const float** inputChannelData, int /*numInputChannels*/,

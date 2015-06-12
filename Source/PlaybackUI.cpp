@@ -258,10 +258,17 @@ void PlaybackUI::startRecording()
     recorder->startRecording (file);
     recordButton->setButtonText ("Stop");
     beatTimer->startTimer();
+    getEverythingReadyForMeasure(getCurrentMeasure());
 }
 
 void PlaybackUI::stopRecording()
 {
+    for (int i=0; i<audioAnalyzer->feature_size; i++) {
+        audioAnalyzer->SubbandAnalysis(audioAnalyzer->subband_signals[i], i+audioAnalyzer->min_note);
+    }
+    float grade = audioAnalyzer->AudioScoreAlignment();
+    printf("grade=%f\n", grade);
+    resultLabel->setText(String(grade), dontSendNotification);
     recorder->stop();
     recordButton->setButtonText ("Record");
     deviceManager.removeAudioCallback(recorder);
@@ -275,7 +282,15 @@ int PlaybackUI::getCurrentMeasure()
 
 void PlaybackUI::getEverythingReadyForMeasure(int measure_index)
 {
-    audioAnalyzer->Clear();
+    if (audioAnalyzer->frame_num > 0) {
+        for (int i=0; i<audioAnalyzer->feature_size; i++) {
+            audioAnalyzer->SubbandAnalysis(audioAnalyzer->subband_signals[i], i+audioAnalyzer->min_note);
+        }
+        float grade = audioAnalyzer->AudioScoreAlignment();
+        printf("grade=%f\n", grade);
+        resultLabel->setText(String(grade), dontSendNotification);
+    }
+
     current_measure_index = measure_index;
     displayAndAnalyzeScore();
 }
@@ -297,7 +312,7 @@ void PlaybackUI::progressToNextMeasure()
     }
     if (current_measure_index == song.segments.size()) {
         current_measure_index--; // stay at the last measure
-        beatTimer->stopTimer();
+        stopRecording();
     }
 }
 
