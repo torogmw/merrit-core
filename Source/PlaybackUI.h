@@ -27,6 +27,8 @@
 #include "MusicXmlParser.h"
 #include "AudioAnalyzer.h"
 #include "MusicTimers.h"
+
+class BeatTimer;
 //[/Headers]
 
 
@@ -39,9 +41,6 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-
-class BeatTimer;
-
 class PlaybackUI  : public Component,
                     public ButtonListener
 {
@@ -54,16 +53,18 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
     void startRecording();
     void stopRecording();
+    int getCurrentMeasure();
+    void getEverythingReadyForMeasure(int measure_index);
+    void displayAndAnalyzeScore();
+    void progressToNextMeasure();
+    void setBeatLabel(int beat);
     //[/UserMethods]
 
     void paint (Graphics& g);
     void resized();
     void buttonClicked (Button* buttonThatWasClicked);
 
-    int getCurrentMeasure();
-    void getEverythingReadyForMeasure(int measure_index);
-    void displayAndAnalyzeScore();
-    void progressToNextMeasure();
+
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
@@ -77,7 +78,7 @@ private:
     Song song;
     int current_measure_index;
     bool just_start_recording;
-    
+
     //[/UserVariables]
 
     //==============================================================================
@@ -92,6 +93,7 @@ private:
     ScopedPointer<TextEditor> bar_textbox;
     ScopedPointer<Label> label;
     ScopedPointer<Label> label2;
+    ScopedPointer<Label> beatLabel;
 
 
     //==============================================================================

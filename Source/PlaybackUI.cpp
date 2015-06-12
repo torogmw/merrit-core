@@ -94,6 +94,14 @@ PlaybackUI::PlaybackUI ()
     label2->setColour (TextEditor::textColourId, Colours::black);
     label2->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
+    addAndMakeVisible (beatLabel = new Label ("beatLabel",
+                                              TRANS("beat: ")));
+    beatLabel->setFont (Font (15.00f, Font::plain));
+    beatLabel->setJustificationType (Justification::centredLeft);
+    beatLabel->setEditable (false, false, false);
+    beatLabel->setColour (TextEditor::textColourId, Colours::black);
+    beatLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
 
     //[UserPreSize]
     playStopButton->setVisible(false);        // invisible by default
@@ -137,6 +145,7 @@ PlaybackUI::~PlaybackUI()
     bar_textbox = nullptr;
     label = nullptr;
     label2 = nullptr;
+    beatLabel = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -165,12 +174,13 @@ void PlaybackUI::resized()
     resultLabel->setBounds (296, 320, 152, 32);
     recordButton->setBounds (24, 320, 48, 24);
     xmlButton->setBounds (80, 320, 56, 24);
-    webBrowserComponent->setBounds (0, 0, 624, 296);
+    webBrowserComponent->setBounds (0, 40, 640, 256);
     demo->setBounds (144, 320, 39, 24);
     bpmTextbox->setBounds (544, 320, 64, 24);
     bar_textbox->setBounds (472, 320, 64, 24);
     label->setBounds (544, 296, 32, 24);
     label2->setBounds (472, 296, 40, 24);
+    beatLabel->setBounds (256, 8, 150, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -239,7 +249,7 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
         recordButton->setVisible(true);
         loadButton->setVisible(true);
         beatTimer->setTimer(bpmTextbox->getText().getIntValue(), 3); // hard-code time-signature for now
-        
+
         //[/UserButtonCode_demo]
     }
 
@@ -315,6 +325,11 @@ void PlaybackUI::progressToNextMeasure()
     just_start_recording = false;
 }
 
+void PlaybackUI::setBeatLabel(int beat)
+{
+    beatLabel->setText(String::repeatedString("[HHH]", beat+1), dontSendNotification);
+}
+
 //[/MiscUserCode]
 
 
@@ -350,7 +365,7 @@ BEGIN_JUCER_METADATA
               virtualName="" explicitFocusOrder="0" pos="80 320 56 24" buttonText="readXML"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <GENERICCOMPONENT name="web browser component" id="6d771a11f7ef330e" memberName="webBrowserComponent"
-                    virtualName="" explicitFocusOrder="0" pos="0 0 624 296" class="WebBrowserComponent"
+                    virtualName="" explicitFocusOrder="0" pos="0 40 640 256" class="WebBrowserComponent"
                     params=""/>
   <TEXTBUTTON name="demo" id="85cd60f80316b64e" memberName="demo" virtualName=""
               explicitFocusOrder="0" pos="144 320 39 24" bgColOff="ff91f24b"
@@ -371,6 +386,11 @@ BEGIN_JUCER_METADATA
   <LABEL name="new label" id="70729000d345ad44" memberName="label2" virtualName=""
          explicitFocusOrder="0" pos="472 296 40 24" edTextCol="ff000000"
          edBkgCol="0" labelText="bar #" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
+  <LABEL name="beatLabel" id="f261db6c03cff3dd" memberName="beatLabel"
+         virtualName="" explicitFocusOrder="0" pos="256 8 150 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="beat: " editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
          bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
