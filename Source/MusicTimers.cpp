@@ -33,6 +33,7 @@ void BeatTimer::executeForMeasure()
 
 void BeatTimer::timerCallback()
 {
+    printf("beat %u\n", beat_counter);
     if (beat_counter == 0) {
         executeForMeasure();
     }
@@ -41,7 +42,7 @@ void BeatTimer::timerCallback()
     if (beat_counter == num_beats_in_measure) {
         beat_counter = 0;
     }
-
+    
 }
 
 void BeatTimer::startTimer()

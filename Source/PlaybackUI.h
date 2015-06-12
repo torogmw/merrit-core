@@ -76,6 +76,7 @@ private:
     ScopedPointer<BeatTimer> beatTimer;
     Song song;
     int current_measure_index;
+    bool just_start_recording;
     
     //[/UserVariables]
 

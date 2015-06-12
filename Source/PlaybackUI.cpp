@@ -117,6 +117,7 @@ PlaybackUI::PlaybackUI ()
     recorder = new AudioRecorder(audioAnalyzer, resultLabel);
     beatTimer = new BeatTimer(this);
     current_measure_index = 0;
+    just_start_recording = true;
     //[/Constructor]
 }
 
@@ -257,18 +258,12 @@ void PlaybackUI::startRecording()
                      .getNonexistentChildFile ("practice", ".wav"));
     recorder->startRecording (file);
     recordButton->setButtonText ("Stop");
-    beatTimer->startTimer();
-    getEverythingReadyForMeasure(getCurrentMeasure());
+    beatTimer->startTimer(); // note: the timer need some time to start!
+    just_start_recording = true;
 }
 
 void PlaybackUI::stopRecording()
 {
-    for (int i=0; i<audioAnalyzer->feature_size; i++) {
-        audioAnalyzer->SubbandAnalysis(audioAnalyzer->subband_signals[i], i+audioAnalyzer->min_note);
-    }
-    float grade = audioAnalyzer->AudioScoreAlignment();
-    printf("grade=%f\n", grade);
-    resultLabel->setText(String(grade), dontSendNotification);
     recorder->stop();
     recordButton->setButtonText ("Record");
     deviceManager.removeAudioCallback(recorder);
@@ -282,17 +277,19 @@ int PlaybackUI::getCurrentMeasure()
 
 void PlaybackUI::getEverythingReadyForMeasure(int measure_index)
 {
-    if (audioAnalyzer->frame_num > 0) {
+//    printf("frame_num %u, measure %u\n", audioAnalyzer->frame_num, current_measure_index);
+    if (!just_start_recording) {
         for (int i=0; i<audioAnalyzer->feature_size; i++) {
             audioAnalyzer->SubbandAnalysis(audioAnalyzer->subband_signals[i], i+audioAnalyzer->min_note);
         }
         float grade = audioAnalyzer->AudioScoreAlignment();
-        printf("grade=%f\n", grade);
+        printf("bar #%u grade=%f\n", current_measure_index, grade);
         resultLabel->setText(String(grade), dontSendNotification);
+        displayAndAnalyzeScore();
     }
 
     current_measure_index = measure_index;
-    displayAndAnalyzeScore();
+    audioAnalyzer->Clear();
 }
 
 void PlaybackUI::displayAndAnalyzeScore()
@@ -307,13 +304,15 @@ void PlaybackUI::displayAndAnalyzeScore()
 
 void PlaybackUI::progressToNextMeasure()
 {
-    if (current_measure_index < song.segments.size()) {
+//    printf("measure=%u\n", current_measure_index);
+    if (!just_start_recording)
         current_measure_index++;
-    }
     if (current_measure_index == song.segments.size()) {
         current_measure_index--; // stay at the last measure
         stopRecording();
     }
+    bar_textbox->setText(String(current_measure_index));
+    just_start_recording = false;
 }
 
 //[/MiscUserCode]

@@ -350,7 +350,7 @@ float AudioAnalyzer::AudioScoreAlignment()
     float grade = 0.;
     for (i=0; i<n; i++) {
         float diff = slope * backtracked_is[i] + intercept - backtracked_js[i];
-        printf("%d\t%f\t%f\t%f\n", i, diff, backtracked_is[i], backtracked_js[i]);
+//        printf("%d\t%f\t%f\t%f\n", i, diff, backtracked_is[i], backtracked_js[i]);
         if (diff < 0) diff = -diff;
         grade += (diff > 0.125 ? 0 : cos(12.566*diff));
     }
