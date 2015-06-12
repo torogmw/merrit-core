@@ -10,11 +10,12 @@
 
 #include "MusicTimers.h"
 
-BeatTimer::BeatTimer()
+BeatTimer::BeatTimer(PlaybackUI *playbackUI_)
 {
     intervalInMilliseconds = 0;
     num_beats_in_measure = 0;
     beat_counter = 0;
+    playbackUI = playbackUI_;
 }
 
 void BeatTimer::setTimer(int bpm, int num_beats_in_measure_)
@@ -24,13 +25,23 @@ void BeatTimer::setTimer(int bpm, int num_beats_in_measure_)
     beat_counter = 0;
 }
 
+void BeatTimer::executeForMeasure()
+{
+    playbackUI->getEverythingReadyForMeasure(playbackUI->getCurrentMeasure());
+    playbackUI->progressToNextMeasure();
+}
+
 void BeatTimer::timerCallback()
 {
+    if (beat_counter == 0) {
+        executeForMeasure();
+    }
+    
     beat_counter++;
     if (beat_counter == num_beats_in_measure) {
         beat_counter = 0;
     }
-    printf("current beat:%u\n", beat_counter);
+
 }
 
 void BeatTimer::startTimer()

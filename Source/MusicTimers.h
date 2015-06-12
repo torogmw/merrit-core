@@ -12,19 +12,24 @@
 #define MUSICTIMER_H_INCLUDED
 
 #include "JuceHeader.h"
+#include "PlaybackUI.h"
+
+class PlaybackUI;
 
 class BeatTimer : public Timer
 {
 public:
-    BeatTimer();
+    BeatTimer(PlaybackUI *playbackUI);
     ~BeatTimer();
     void setTimer(int bpm, int num_beats_in_measure);
     void timerCallback();
     void startTimer();
 private:
+    void executeForMeasure();
     int intervalInMilliseconds;
     int num_beats_in_measure;
     int beat_counter;
+    PlaybackUI *playbackUI;
 };
 
 

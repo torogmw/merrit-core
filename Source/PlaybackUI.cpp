@@ -115,6 +115,8 @@ PlaybackUI::PlaybackUI ()
     audioAnalyzer = new AudioAnalyzer(FS_MIR, 512);
     inputSource = new AudioInputSource(deviceManager, audioAnalyzer);
     recorder = new AudioRecorder(audioAnalyzer, resultLabel);
+    beatTimer = new BeatTimer(this);
+    current_measure_index = 0;
     //[/Constructor]
 }
 
@@ -218,23 +220,24 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
             for (std::vector<NoteUnit>::iterator it = notes.begin(); it != notes.end(); it++) {
                 printf("%d\n", it->pitch);
             }
+            song = Song(notation->getMeasures());
+            current_measure_index = bar_textbox->getText().getIntValue();
+            displayAndAnalyzeScore();
+            recordButton->setVisible(true);
+            loadButton->setVisible(true);
+            beatTimer->setTimer(bpmTextbox->getText().getIntValue(), 3); // hard-code time-signature for now
         }
         //[/UserButtonCode_xmlButton]
     }
     else if (buttonThatWasClicked == demo)
     {
         //[UserButtonCode_demo] -- add your button handler code here..
-        song = Song(notation->getMeasures());
-        int display_segment_index = bar_textbox->getText().getIntValue();
-        std::string concat_score = song.segments[display_segment_index].scoreForDisplay;
-        String encoded_score = URL::addEscapeChars(song.scoreHeader + concat_score, true);
-        String s = "file://" + File::getCurrentWorkingDirectory().getFullPathName() + "/../../../../Webpages/index.html?score=" + encoded_score;
-        printf("%ls\n", s.toWideCharPointer());
-        webBrowserComponent->goToURL(s);
-        audioAnalyzer->SetScore(song.segments[display_segment_index].scoreForAnalyzer, song.segments[display_segment_index].timesForAnalyzer);
+        song = Song();
+        current_measure_index = bar_textbox->getText().getIntValue();
+        displayAndAnalyzeScore();
         recordButton->setVisible(true);
         loadButton->setVisible(true);
-        beatTimer.setTimer(bpmTextbox->getText().getIntValue(), 3); // hard-code time-signature for now
+        beatTimer->setTimer(bpmTextbox->getText().getIntValue(), 3); // hard-code time-signature for now
         
         //[/UserButtonCode_demo]
     }
@@ -254,7 +257,7 @@ void PlaybackUI::startRecording()
                      .getNonexistentChildFile ("practice", ".wav"));
     recorder->startRecording (file);
     recordButton->setButtonText ("Stop");
-    beatTimer.startTimer();
+    beatTimer->startTimer();
 }
 
 void PlaybackUI::stopRecording()
@@ -262,7 +265,40 @@ void PlaybackUI::stopRecording()
     recorder->stop();
     recordButton->setButtonText ("Record");
     deviceManager.removeAudioCallback(recorder);
-    beatTimer.stopTimer();
+    beatTimer->stopTimer();
+}
+
+int PlaybackUI::getCurrentMeasure()
+{
+    return current_measure_index;
+}
+
+void PlaybackUI::getEverythingReadyForMeasure(int measure_index)
+{
+    audioAnalyzer->Clear();
+    current_measure_index = measure_index;
+    displayAndAnalyzeScore();
+}
+
+void PlaybackUI::displayAndAnalyzeScore()
+{
+    std::string concat_score = song.segments[current_measure_index].scoreForDisplay;
+    String encoded_score = URL::addEscapeChars(song.scoreHeader + concat_score, true);
+    String s = "file://" + File::getCurrentWorkingDirectory().getFullPathName() + "/../../../../Webpages/index.html?score=" + encoded_score;
+//    printf("%ls\n", s.toWideCharPointer());
+    webBrowserComponent->goToURL(s);
+    audioAnalyzer->SetScore(song.segments[current_measure_index].scoreForAnalyzer, song.segments[current_measure_index].timesForAnalyzer);
+}
+
+void PlaybackUI::progressToNextMeasure()
+{
+    if (current_measure_index < song.segments.size()) {
+        current_measure_index++;
+    }
+    if (current_measure_index == song.segments.size()) {
+        current_measure_index--; // stay at the last measure
+        beatTimer->stopTimer();
+    }
 }
 
 //[/MiscUserCode]

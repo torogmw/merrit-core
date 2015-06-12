@@ -39,6 +39,9 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
+
+class BeatTimer;
+
 class PlaybackUI  : public Component,
                     public ButtonListener
 {
@@ -57,7 +60,10 @@ public:
     void resized();
     void buttonClicked (Button* buttonThatWasClicked);
 
-
+    int getCurrentMeasure();
+    void getEverythingReadyForMeasure(int measure_index);
+    void displayAndAnalyzeScore();
+    void progressToNextMeasure();
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
@@ -67,8 +73,9 @@ private:
     ScopedPointer<AudioRecorder> recorder;
     ScopedPointer<MusicXmlParser> notation;
     ScopedPointer<AudioAnalyzer> audioAnalyzer;
-    BeatTimer beatTimer;
+    ScopedPointer<BeatTimer> beatTimer;
     Song song;
+    int current_measure_index;
     
     //[/UserVariables]
 
