@@ -2,10 +2,12 @@
     <head>
         <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
         <script src="vextab-div.js"></script>
-        <link href="vextab.css" media="screen" rel="Stylesheet" type="text/css" />
     </head>
     <body>
-        <div class="vex-tabdiv" width=700 height=400 scale=1.0></div>
+        <div style="float:left;width:600;height:240">
+            <canvas id="boo"></canvas>
+            <div id="error"></div>
+        </div>
         <script>
             function getParameter(name) {
                 name = name.replace(/\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -16,14 +18,36 @@
             }
 
             var param = getParameter("score");
-            console.log(param)
-
             if (!param)
-                param = "tabstave notation=true tablature=false key=E time=3/4\nvoice\nnotes :8 E/3 G/4 B/4 E/5 B/4 G/4\nvoice\nnotes :hd B/5";
+                param = "tabstave notation=true tablature=false key=E time=3/4\nvoice\nnotes :hd B/5\nvoice\nnotes :8 E/3 G/4 B/4 E/5 B/4 G/4";
 
-            VexTabDiv.Flow.Renderer.USE_CANVAS_PROXY = true;
-            VexTabDiv.Artist.DEBUG = false;
-            $('.vex-tabdiv').html(param);
+            VexTab = VexTabDiv.VexTab;
+
+            Artist = VexTabDiv.Artist;
+            Renderer = VexTabDiv.Flow.Renderer;
+
+            Artist.DEBUG = false;
+            Artist.NOLOGO = true;
+            VexTab.DEBUG = false;
+
+            // Create VexFlow Renderer from canvas element with id #boo
+            renderer = new Renderer($('#boo')[0], Renderer.Backends.CANVAS);
+
+            // Initialize VexTab artist and parser.
+            artist = new Artist(10, 10, 600, {scale: 1.0});
+            artist.setOptions({"stave-distance": 40, "space": 10});
+            vextab = new VexTab(artist);
+
+            console.log(artist);
+
+            try {
+                vextab.parse(param);
+                artist.render(renderer);
+                $("#error").text("");
+            } catch (e) {
+                console.log(e);
+                $("#error").html(e.message.replace(/[\n]/g, '<br/>'));
+            }
 
         </script>
     </body>
