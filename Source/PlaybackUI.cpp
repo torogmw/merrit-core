@@ -236,7 +236,6 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
             displayAndAnalyzeScore();
             recordButton->setVisible(true);
             loadButton->setVisible(true);
-            beatTimer->setTimer(bpmTextbox->getText().getIntValue(), 3); // hard-code time-signature for now
         }
         //[/UserButtonCode_xmlButton]
     }
@@ -248,7 +247,6 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
         displayAndAnalyzeScore();
         recordButton->setVisible(true);
         loadButton->setVisible(true);
-        beatTimer->setTimer(bpmTextbox->getText().getIntValue(), 3); // hard-code time-signature for now
 
         //[/UserButtonCode_demo]
     }
@@ -268,6 +266,7 @@ void PlaybackUI::startRecording()
                      .getNonexistentChildFile ("practice", ".wav"));
     recorder->startRecording (file);
     recordButton->setButtonText ("Stop");
+    beatTimer->setTimer(bpmTextbox->getText().getIntValue(), 3); // hard-code time-signature for now
     beatTimer->startTimer(); // note: the timer need some time to start!
     just_start_recording = true;
 }
@@ -287,7 +286,6 @@ int PlaybackUI::getCurrentMeasure()
 
 void PlaybackUI::getEverythingReadyForMeasure(int measure_index)
 {
-//    printf("frame_num %u, measure %u\n", audioAnalyzer->frame_num, current_measure_index);
     if (!just_start_recording) {
         for (int i=0; i<audioAnalyzer->feature_size; i++) {
             audioAnalyzer->SubbandAnalysis(audioAnalyzer->subband_signals[i], i+audioAnalyzer->min_note);
@@ -307,16 +305,16 @@ void PlaybackUI::displayAndAnalyzeScore()
     std::string concat_score = song.segments[current_measure_index].scoreForDisplay;
     String encoded_score = URL::addEscapeChars(song.scoreHeader + concat_score, true);
     String s = "file://" + File::getCurrentWorkingDirectory().getFullPathName() + "/../../../../Webpages/index.html?score=" + encoded_score;
-//    printf("%ls\n", s.toWideCharPointer());
     webBrowserComponent->goToURL(s);
     audioAnalyzer->SetScore(song.segments[current_measure_index].scoreForAnalyzer, song.segments[current_measure_index].timesForAnalyzer);
 }
 
 void PlaybackUI::progressToNextMeasure()
 {
-//    printf("measure=%u\n", current_measure_index);
-    if (!just_start_recording)
+    
+    if (!just_start_recording) {
         current_measure_index++;
+    }
     if (current_measure_index == song.segments.size()) {
         current_measure_index--; // stay at the last measure
         stopRecording();

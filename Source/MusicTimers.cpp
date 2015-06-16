@@ -27,8 +27,8 @@ void BeatTimer::setTimer(int bpm, int num_beats_in_measure_)
 
 void BeatTimer::executeForMeasure()
 {
-    playbackUI->getEverythingReadyForMeasure(playbackUI->getCurrentMeasure());
     playbackUI->progressToNextMeasure();
+    playbackUI->getEverythingReadyForMeasure(playbackUI->getCurrentMeasure());
 }
 
 void BeatTimer::timerCallback()
