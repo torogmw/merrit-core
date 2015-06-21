@@ -40,6 +40,13 @@ MusicXmlParser :: MusicXmlParser(const File &xmlFile)
     keyMap[4] = std::vector<int>{1,1,0,1,1,0,0};       // E - c#
     keyMap[5] = std::vector<int>{1,1,0,1,1,1,0};       // B - g#
     
+    // add note map
+    noteLengthMap[1] = ":16";
+    noteLengthMap[2] = ":8";
+    noteLengthMap[4] = ":4";
+    noteLengthMap[8] = ":h";
+    noteLengthMap[12] = ":hd";
+    
     mainScoreElement = new XmlElement(*XmlDocument :: parse(xmlFile));
     String scoreType = mainScoreElement -> getTagName();
     if (scoreType == "score-partwise") {
@@ -182,12 +189,58 @@ int MusicXmlParser::pitchToMidi(String pitch, int octave, int alter)
     return (octave + 1) * 12 + midiBase[pitch] + alter;
 }
 
-// please parse the string info here
-std::string MusicXmlParser::generateScoreString(MeasureUnit& measureUnit) const
+std::string MusicXmlParser::midiToPitch(int midiNote)
 {
-    std::string displayString = "voice\nnotes :hd";
+    int octave = midiNote / 12;
+    int offset = midiNote - octave * 12;
+    
+    std::map<String, int>::const_iterator it;
+    String refNote = "";
+    for (it = midiBase.begin(); it != midiBase.end(); ++it)
+    {
+        if (it->second == offset)
+        {
+            refNote = it->first;
+            break;
+        }
+    }
+    
+    String toReturn = refNote + "/" + String(octave);
+    return toReturn.toStdString();
+}
+
+// please parse the string info here
+std::string MusicXmlParser::generateScoreString(MeasureUnit& measureUnit)
+{
+    std::string layerPrefix = "\nvoice\n"; // prefix for notes
+    std::string displayString = "";
+    float prevRef = 0.0; // as a reference for multiple layers
+    int prevLength = 0; // as a reference for note length
     if (measureUnit.notes.size() > 0) {
-        return "";
+        // we do have notes in this measure
+        prevRef = measureUnit.notes[0].onsetTime;
+        displayString.append(layerPrefix);
+        for (int i = 0; i<measureUnit.notes.size(); i++) {
+            NoteUnit note = measureUnit.notes[i];
+            if (note.onsetTime < prevRef) {
+                // we need to init a new layer
+                displayString.append(layerPrefix);
+                prevLength = 0;  // reset prevLength
+            }
+            if (note.duration != prevLength) {
+                // we need to init a new note length
+                displayString.append(" ");
+                displayString.append(noteLengthMap[note.duration]);
+                // update the note duration and lay ref
+                prevLength = note.duration;
+                prevRef = note.onsetTime + (note.duration / 16.0);
+            }
+            displayString.append(" ");
+            displayString.append(midiToPitch(note.pitch));
+        }
+        // finally add a enter as close
+        displayString.append("\n");
+        return displayString;
     } else {
         return "";
     }

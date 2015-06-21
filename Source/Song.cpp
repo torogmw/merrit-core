@@ -27,7 +27,7 @@ Song::Song()
     float s0_times[] = {1.0/6.0, 1.0/6.0, 2.0/6.0, 3.0/6.0, 4.0/6.0, 5.0/6.0, 6.0/6.0};
     segments[0].scoreForAnalyzer = std::vector<Note>(s0_num_notes);
     segments[0].timesForAnalyzer = std::vector<float>(s0_num_notes);
-    segments[0].scoreForDisplay = "voice\nnotes :hd B/5\nvoice\nnotes :8 E/3 G/4 B/4 E/5 B/4 G/4\n";
+    segments[0].scoreForDisplay = "\nvoice\nnotes :hd B/5\nvoice\nnotes :8 E/3 G/4 B/4 E/5 B/4 G/4\n";
     for (i=0; i<s0_num_notes; i++) {
         segments[0].scoreForAnalyzer[i].midi_pitch = s0_midi_pitches[i] - 12;
         segments[0].timesForAnalyzer[i] = s0_times[i];
