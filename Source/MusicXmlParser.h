@@ -41,9 +41,10 @@ public:
 
 private:
     int pitchToMidi(String pitch, int octave, int alter);
+    std::string midiToPitch(int midinote);
     float generateNoteUnit(XmlElement* noteElement, float measureIndex, MeasureUnit& measureUnit);
     void generateGlobalAttribute(XmlElement* attributeElement);
-    std::string generateScoreString(MeasureUnit& measureUnit) const;
+    std::string generateScoreString(MeasureUnit& measureUnit);
 
     ScopedPointer<XmlElement> mainScoreElement;
     int globalTempo;
@@ -52,7 +53,8 @@ private:
     std::vector<NoteUnit> allNotes;
     std::vector<MeasureUnit> measures;
     std::map<String, int> midiBase;
-    std::map<int, std::vector<int> > keyMap;  // circle of fifth step -> vector of key +/- from C to B 
+    std::map<int, std::vector<int> > keyMap;  // circle of fifth step -> vector of key +/- from C to B
+    std::map<int, std::string > noteLengthMap; //map the actual duration to note String
 };
 
 #endif /* defined(__merrit_core__MusicXmlParser__) */
