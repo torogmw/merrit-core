@@ -242,7 +242,7 @@ void PlaybackUI::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == demo)
     {
         //[UserButtonCode_demo] -- add your button handler code here..
-        song = Song();
+        // song = Song();
         current_measure_index = bar_textbox->getText().getIntValue();
         displayAndAnalyzeScore();
         recordButton->setVisible(true);

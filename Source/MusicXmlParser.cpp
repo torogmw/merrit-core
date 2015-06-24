@@ -212,7 +212,7 @@ std::string MusicXmlParser::midiToPitch(int midiNote)
 // please parse the string info here
 std::string MusicXmlParser::generateScoreString(MeasureUnit& measureUnit)
 {
-    std::string layerPrefix = "\nvoice\n"; // prefix for notes
+    std::string layerPrefix = "\nvoice\nnotes"; // prefix for notes
     std::string displayString = "";
     float prevRef = 0.0; // as a reference for multiple layers
     int prevLength = 0; // as a reference for note length
