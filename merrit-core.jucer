@@ -5,6 +5,10 @@
               jucerVersion="3.1.0">
   <MAINGROUP id="NUtEzM" name="merrit-core">
     <GROUP id="{B06626E2-3868-A9E1-29DD-B6A380C16FC4}" name="Source">
+      <FILE id="LqxmT9" name="ScoreSelectionComponent.cpp" compile="1" resource="0"
+            file="Source/ScoreSelectionComponent.cpp"/>
+      <FILE id="xTtpTM" name="ScoreSelectionComponent.h" compile="0" resource="0"
+            file="Source/ScoreSelectionComponent.h"/>
       <GROUP id="{F952E889-2F2D-36E1-C44C-AA6BBB767B57}" name="Audio-Basic">
         <FILE id="PqUm6p" name="AudioInputSource.cpp" compile="1" resource="0"
               file="Source/AudioInputSource.cpp"/>
