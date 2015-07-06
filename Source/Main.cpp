@@ -10,6 +10,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PlaybackUI.h"
+#include "ScoreSelectionComponent.h"
 
 Component* createMainContentComponent();
 
@@ -68,7 +69,7 @@ public:
         {
             setUsingNativeTitleBar (true);
             //setContentOwned (createMainContentComponent(), true);
-            setContentOwned (new PlaybackUI(), true);
+            setContentOwned (new ScoreSelectionComponent(), true);
             setResizable (true, true);
 
             centreWithSize (getWidth(), getHeight());
